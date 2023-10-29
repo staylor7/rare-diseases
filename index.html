@@ -5,47 +5,11 @@
 		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Catalog of Rare Diseases</title>
-		<style>
-			a:link {
-				color: red;
-				text-decoration: none;
-			}
-			a:visited {
-				color: purple;
-				text-decoration: none;
-			}
-			a:hover {
-				color: darkorange;
-			}
-			a:active {
-				color: orange;
-			}
-
-			#header {
-				/* width: 1000px;
-	margin: 10px auto 10px auto;
-	padding: 10px 10px 10px 10px; */
-				font-family: system-ui;
-				font-size: 1.5em;
-				font-weight: bold;
-				color: purple;
-				background-color: white;
-			}
-		</style>
-		<script src="https://d3js.org/d3.v7.js"></script>
-		<script src="./raredisease.js"></script>
-		<script>
-			window.onload = function () {
-				readData("seq.d3.csv", "#catalog");
-			};
-		</script>
 	</head>
 	<body>
 		<div id="app"></div>
 		<script type="module" src="/src/main.ts"></script>
-		<center>
-			<div id="header">Catalog of Rare Diseases</div>
-			<div id="catalog"></div>
-		</center>
+		<div id="header">Catalog of Rare Diseases</div>
+		<div id="catalog"></div>
 	</body>
 </html>

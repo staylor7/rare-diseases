@@ -1,10 +1,12 @@
-function readData(file, id) {
+import * as d3 from "d3";
+
+export function readData(file, id) {
 	d3.csv(file, processData) // promise object
 		.then((data) => graph(data, id)) //callback
 		.catch((error) => console.log("Error: ", error.message));
 }
 
-function processData(datum) {
+export function processData(datum) {
 	let dataItem = {
 		disease: datum.Disease,
 		category: datum.Category,
@@ -19,22 +21,21 @@ function processData(datum) {
 	return dataItem;
 }
 
-function graph(data, id) {
+export function graph(data, id) {
 	const width = data.length * 4,
 		height = data.length * 4,
 		radius = Math.min(width, height) / 2;
 
 	const arc = d3
 		.arc()
-		.innerRadius(radius * 0.3)
-		//.outerRadius((d) => console.log(d.data.ngenes)); //undefined, why?
-		.outerRadius((d) => radius * 0.75 + d.data.ngenes * 4);
+		.innerRadius(radius * 0.5)
+		.outerRadius(radius - 1);
 
 	const pie = d3
 		.pie()
 		.padAngle(1 / radius)
 		.sort(null)
-		.value((d) => d.chakra.length); // not sure why this works
+		.value((d) => d.chakra.length);
 
 	let colors = d3
 		.scaleOrdinal()
@@ -102,9 +103,8 @@ function graph(data, id) {
 				.append("tspan")
 				.attr("y", "-0.4em")
 				.attr("font-weight", "normal")
-				//.text(d => d.data.gene))
-				.text((d) => "")
-		) // this should appear on mouseover only, so I've made it blank for now
+				.text((d) => d.data.ngenes)
+		)
 		.call((text) =>
 			text
 				.filter((d) => d.endAngle - d.startAngle > 0.25)
