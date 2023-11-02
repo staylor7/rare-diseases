@@ -1,28 +1,28 @@
 a:link {
-	color: red;
-	text-decoration: none;
+  color: red;
+  text-decoration: none;
 }
 a:visited {
-	color: purple;
-	text-decoration: none;
+  color: purple;
+  text-decoration: none;
 }
 a:hover {
-	color: darkorange;
+  color: darkorange;
 }
 a:active {
-	color: orange;
+  color: orange;
 }
 
 #header {
-	/* width: 1000px;
+  /* width: 1000px;
 margin: 10px auto 10px auto;
 padding: 10px 10px 10px 10px; */
-	font-family: system-ui;
-	font-size: 1.5em;
-	font-weight: bold;
-	color: purple;
-	background-color: white;
-	justify-content: center;
-	align-content: center;
-	text-align: center;
+  font-family: system-ui;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: purple;
+  background-color: white;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
 }
