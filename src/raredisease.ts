@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 
-export function readData(file: string, id: string) {
+export function readData(file: string, container: HTMLElement) {
 	d3.csv(file, processData) // promise object
-		.then((data) => graph(data, id)) //callback
+		.then((data) => graph(data, container)) //callback
 		.catch((error) => console.log("Error: ", error.message));
 }
 
@@ -21,9 +21,7 @@ export function processData(datum) {
 	return dataItem;
 }
 
-export function graph(data, id: string) {
-	console.log(data, id);
-
+export function graph(data, container: HTMLElement) {
 	const width = data.length * 4,
 		height = data.length * 4,
 		radius = Math.min(width, height) / 2;
@@ -75,7 +73,7 @@ export function graph(data, id: string) {
 		);
 
 	let svg = d3
-		.select(id)
+		.select(container)
 		.append("svg") // create an <svg> element on the webpage
 		.attr("width", width)
 		.attr("height", height)
@@ -118,6 +116,4 @@ export function graph(data, id: string) {
 				.attr("fill-opacity", 0.7)
 				.text((d) => d.data.gene.toLocaleString("en-US"))
 		);
-
-	console.log(svg);
 }
