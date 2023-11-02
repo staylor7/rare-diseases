@@ -1,8 +1,9 @@
-import { readData, processData, graph } from "./raredisease-pie";
-import { csv } from "d3";
+import { readData } from "./raredisease";
 
 async function displayCatalog() {
 	const container = document.getElementById("catalog");
+	if (container?.id) readData("/seq.d3.csv", container.id);
+	console.log(container);
 }
 
 displayCatalog();
