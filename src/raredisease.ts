@@ -12,12 +12,21 @@ type Datum = {
   disease: string;
   category: string;
   chakra: string;
-  gene: string;
+  nphenotypes: number;
   ngenes: number;
-  nphenotype: number;
+  elite: string;
+  inheritance: string;
   nvariants: number;
   phenoSys: string;
+  gene: string;
   promoter: string;
+  malacards: string;
+};
+
+// Hacky workaround for type issues, probably inaccurate
+type DatumArcSVGElement = SVGPathElement & {
+  __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
+  __on: EventListener[];
 };
 
 const chakraToColor = scaleOrdinal(
@@ -57,12 +66,15 @@ export async function readData(file: string, container: HTMLElement) {
       disease: d.Disease,
       category: d.Category,
       chakra: d.Chakra,
-      gene: d.Gene,
+      nphenotypes: parseInt(d.Nphenotype) || 0, // Nphenotype(s?)
       ngenes: parseInt(d.Ngenes) || 0,
-      nphenotype: parseInt(d.Nphenotype) || 0,
+      elite: d.Elite,
+      inheritance: d.Inheritance,
       nvariants: parseInt(d.Nvariants) || 0,
       phenoSys: d.Phenotype_System,
+      gene: d.Gene,
       promoter: d.Promoter,
+      malacards: d.Malacards,
     };
   });
 
@@ -74,11 +86,12 @@ export async function readData(file: string, container: HTMLElement) {
 }
 
 function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
-  const width = data.length * 4,
-    height = data.length * 4,
-    radius = Math.min(width, height) / 2;
+  const width = data.length * 5,
+    height = data.length * 5,
+    radius = Math.min(width, height) / 2,
+    stroke = 3;
 
-  const diseaseArc = arc<PieArcDatum<Datum>>()
+  const createArc = arc<PieArcDatum<Datum>>() // Misleading variable name?
     .innerRadius(radius * 0.3)
     .outerRadius((d) => radius * 0.75 + d.data.ngenes * 4);
 
@@ -94,41 +107,78 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     .attr("viewBox", [-width / 2, -height / 2, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
+  // from Jackson Levitt's Pie Chart
+  const center = svg.append("g").attr("transform", `translate(${0}, ${0})`);
+
+  center
+    .append("circle")
+    .attr("fill", "white")
+    .attr("r", radius * 0.275);
+
+  center
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", `translate(0, 10)`)
+    //.attr("font-size", "0.75em")
+    .attr("font-family", "system-ui")
+    .attr("fill", "#999999")
+    .attr("id", "centerText")
+    .html("disease name");
+
   svg
     .append("g")
     .selectAll()
     .data(createPie(data))
     .join("path")
     .attr("fill", (d) => chakraToColor(d.data.chakra))
-    .attr("d", diseaseArc)
+    .attr("d", createArc)
+    .on("mouseenter", handleMouseOver)
+    .on("mouseout", handleMouseOut)
     .append("title")
-    .text((d) => `${d.data.chakra}: ${d.data.chakra.toLocaleString()}`); // What's this for?
+    .style("width", (d) => chakraToColor(d.data.chakra) + "px")
+    .text((d) => `${d.data.malacards}`);
 
-  svg
-    .append("g")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 12)
-    .attr("text-anchor", "middle")
-    .selectAll()
-    .data(createPie(data))
-    .join("text")
-    .attr("transform", (d) => `translate(${diseaseArc.centroid(d)})`)
-    .call(
-      (text) =>
-        text
-          .append("tspan")
-          .attr("y", "-0.4em")
-          .attr("font-weight", "normal")
-          //.text(d => d.data.gene))
-          .text("") // TODO: Appear on mousover (blank for now)
-    )
-    .call((text) =>
-      text
-        .filter((d) => d.endAngle - d.startAngle > 0.25)
-        .append("tspan")
-        .attr("x", 0)
-        .attr("y", "0.7em")
-        .attr("fill-opacity", 0.7)
-        .text((d) => d.data.gene)
-    );
+  function handleMouseOver(e: MouseEvent) {
+    const diseaseArc = e.target as DatumArcSVGElement;
+    const d = diseaseArc.__data__.data;
+
+    select(diseaseArc)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", stroke)
+      .transition()
+      .duration(500)
+      .attr("transform", GetTransform);
+
+    select("#centerText").html(`${d.disease}`);
+
+    // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
+    select("#diseaseText").html(`<b>${d.disease} </b><br>
+    <font size="-1">${d.promoter} </font><br>
+    gene: ${d.gene}; ${d.phenoSys} <br>
+    category: ${d.category}; ${d.chakra} chakra <br>
+    inheritance: ${d.inheritance} <br>
+    number of phenotypes: ${d.nphenotypes} <br>
+    number of genes: ${d.ngenes}`);
+  }
+
+  // TODO: Make arc brighter
+  function GetTransform(d: PieArcDatum<Datum>) {
+    const dist = 1;
+    const midAngle = (d.endAngle - d.startAngle) / 2 + d.startAngle;
+    const x = Math.sin(midAngle) * dist;
+    const y = Math.cos(midAngle) * dist;
+    return "translate(" + x + "," + y + ")";
+  }
+
+  function handleMouseOut(e: MouseEvent) {
+    const diseaseArc = e.target as SVGPathElement;
+
+    select(diseaseArc).attr("stroke-width", "0px");
+    select(diseaseArc)
+      .transition()
+      .duration(500)
+      .attr("transform", "translate(0,0)");
+
+    select("#mainText").html("Gene");
+  }
 }
