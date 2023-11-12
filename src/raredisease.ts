@@ -1,12 +1,4 @@
-import {
-  csv,
-  DSVParsedArray,
-  PieArcDatum,
-  arc,
-  pie,
-  select,
-  ValueFn,
-} from "d3";
+import { csv, DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
 import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
 
 export async function readData(file: string, container: HTMLElement) {
@@ -95,11 +87,11 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
       .attr("stroke", "#fff")
       .attr("stroke-width", stroke)
       .transition()
-      .duration(500)
-      // .attr(
-      //   "transform",
-      //   GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
-      // );
+      .duration(500);
+    // .attr(
+    //   "transform",
+    //   GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
+    // );
 
     select("#centerText").html(`${d.disease}`);
 
