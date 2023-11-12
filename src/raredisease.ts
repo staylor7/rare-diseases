@@ -45,8 +45,6 @@ const chakraToColor = scaleOrdinal(
     "rishi",
   ],
   [
-    "#8dd3c7",
-    "#ffffb3",
     "#bebada",
     "#fb8072",
     "#80b1d3",
@@ -56,7 +54,9 @@ const chakraToColor = scaleOrdinal(
     "#d9d9d9",
     "#bc80bd",
     "#ccebc5",
-    "#ffed6f",
+    "#ffed6f",    
+    "#8dd3c7",
+    "#ffffb3",
   ]
 );
 
