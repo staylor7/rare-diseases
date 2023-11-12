@@ -147,7 +147,7 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
       .attr("stroke-width", stroke)
       .transition()
       .duration(500)
-      .attr("transform", GetTransform);
+      //.attr("transform", GetTransform);
 
     select("#centerText").html(`${d.disease}`);
 
