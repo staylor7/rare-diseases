@@ -6,6 +6,7 @@ import {
   arc,
   pie,
   select,
+  ValueFn,
 } from "d3";
 
 type Datum = {
@@ -147,7 +148,10 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
       .attr("stroke-width", stroke)
       .transition()
       .duration(500)
-      .attr("transform", GetTransform);
+      .attr(
+        "transform",
+        GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
+      );
 
     select("#centerText").html(`${d.disease}`);
 
