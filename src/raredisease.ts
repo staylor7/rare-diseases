@@ -162,13 +162,13 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
   }
 
   // TODO: Make arc brighter
-  function GetTransform(d: PieArcDatum<Datum>) {
+  /* function GetTransform(d: PieArcDatum<Datum>) {
     const dist = 1;
     const midAngle = (d.endAngle - d.startAngle) / 2 + d.startAngle;
     const x = Math.sin(midAngle) * dist;
     const y = Math.cos(midAngle) * dist;
     return "translate(" + x + "," + y + ")";
-  }
+  } */
 
   function handleMouseOut(e: MouseEvent) {
     const diseaseArc = e.target as SVGPathElement;
