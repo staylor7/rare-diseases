@@ -1,64 +1,5 @@
-import {
-  csv,
-  DSVParsedArray,
-  PieArcDatum,
-  scaleOrdinal,
-  arc,
-  pie,
-  select,
-} from "d3";
-
-type Datum = {
-  disease: string;
-  category: string;
-  chakra: string;
-  nphenotypes: number;
-  ngenes: number;
-  elite: string;
-  inheritance: string;
-  nvariants: number;
-  phenoSys: string;
-  gene: string;
-  promoter: string;
-  malacards: string;
-};
-
-// Hacky workaround for type issues, probably inaccurate
-type DatumArcSVGElement = SVGPathElement & {
-  __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
-  __on: EventListener[];
-};
-
-const chakraToColor = scaleOrdinal(
-  [
-    "ritu",
-    "indu",
-    "vasu",
-    "rudra",
-    "veda",
-    "aditya",
-    "dishi",
-    "bana",
-    "bhrama",
-    "netra",
-    "agni",
-    "rishi",
-  ],
-  [
-    "#bebada",
-    "#fb8072",
-    "#80b1d3",
-    "#fdb462",
-    "#b3de69",
-    "#fccde5",
-    "#d9d9d9",
-    "#bc80bd",
-    "#ccebc5",
-    "#ffed6f",    
-    "#8dd3c7",
-    "#FFD9B2",
-  ]
-);
+import { csv, DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
+import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
 
 export async function readData(file: string, container: HTMLElement) {
   const data: DSVParsedArray<Datum> = await csv(file, (d) => {
@@ -146,8 +87,11 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
       .attr("stroke", "#fff")
       .attr("stroke-width", stroke)
       .transition()
-      .duration(500)
-      //.attr("transform", GetTransform);
+      .duration(500);
+    // .attr(
+    //   "transform",
+    //   GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
+    // );
 
     select("#centerText").html(`${d.disease}`);
 
