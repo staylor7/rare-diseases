@@ -113,7 +113,7 @@ export function graph(data, container: HTMLElement) {
     .style("width", function(d) {return colors(d) + "px"; })
     .text((d) => `${d.data.malacards}`);      // tooltip on mouseover
  
-  //function handleMouseOver(d, i) { // i doesn't seem necessary
+  //function handleMouseOver(d) {
   function handleMouseOver(d) {
       d3.select(this)
         .attr("stroke", "#fff")
@@ -146,7 +146,7 @@ export function graph(data, container: HTMLElement) {
                         // maybe here is a place to try making an arc brighter?
   }
 
-  function handleMouseOut(d,i){
+  function handleMouseOut(d){
     d3.select(this)
       .attr("stroke-width","0px");
     d3.select(this)
