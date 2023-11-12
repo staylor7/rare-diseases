@@ -1,80 +1,94 @@
-import * as d3 from "d3";
+import {
+  csv,
+  DSVParsedArray,
+  PieArcDatum,
+  scaleOrdinal,
+  arc,
+  pie,
+  select,
+} from "d3";
 
-export function readData(file: string, container: HTMLElement) {
-  d3.csv(file, processData) // promise object
-    .then((data) => graph(data, container)) //callback
-    .catch((error) => console.log("Error: ", error.message));
+type Datum = {
+  disease: string;
+  category: string;
+  chakra: string;
+  gene: string;
+  ngenes: number;
+  nphenotype: number;
+  nvariants: number;
+  phenoSys: string;
+  promoter: string;
+};
+
+const chakraToColor = scaleOrdinal(
+  [
+    "ritu",
+    "indu",
+    "vasu",
+    "rudra",
+    "veda",
+    "aditya",
+    "dishi",
+    "bana",
+    "bhrama",
+    "netra",
+    "agni",
+    "rishi",
+  ],
+  [
+    "#8dd3c7",
+    "#ffffb3",
+    "#bebada",
+    "#fb8072",
+    "#80b1d3",
+    "#fdb462",
+    "#b3de69",
+    "#fccde5",
+    "#d9d9d9",
+    "#bc80bd",
+    "#ccebc5",
+    "#ffed6f",
+  ]
+);
+
+export async function readData(file: string, container: HTMLElement) {
+  const data: DSVParsedArray<Datum> = await csv(file, (d) => {
+    return {
+      disease: d.Disease,
+      category: d.Category,
+      chakra: d.Chakra,
+      gene: d.Gene,
+      ngenes: parseInt(d.Ngenes) || 0,
+      nphenotype: parseInt(d.Nphenotype) || 0,
+      nvariants: parseInt(d.Nvariants) || 0,
+      phenoSys: d.Phenotype_System,
+      promoter: d.Promoter,
+    };
+  });
+
+  try {
+    graph(data, container);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-export function processData(datum) {
-  const dataItem = {
-    disease: datum.Disease,
-    category: datum.Category,
-    chakra: datum.Chakra,
-    gene: datum.Gene,
-    ngenes: parseInt(datum.Ngenes) || 0,
-    nphenotype: parseInt(datum.Nphenotype) || 0,
-    nvariants: parseInt(datum.Nvariants) || 0,
-    phenoSys: datum.Phenotype_System,
-    promoter: datum.Promoter,
-  };
-  return dataItem;
-}
-
-export function graph(data, container: HTMLElement) {
+function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
   const width = data.length * 4,
     height = data.length * 4,
     radius = Math.min(width, height) / 2;
 
-  const arc = d3
-    .arc()
+  const diseaseArc = arc<PieArcDatum<Datum>>()
     .innerRadius(radius * 0.3)
-    //.outerRadius((d) => console.log(d.data.ngenes)); //undefined, why?
     .outerRadius((d) => radius * 0.75 + d.data.ngenes * 4);
 
-  const pie = d3
-    .pie()
+  const createPie = pie<Datum>() // Misleading variable name?
     .padAngle(1 / radius)
     .sort(null)
-    .value((d) => d.chakra.length); // not sure why this works
+    .value((d) => d.chakra.length);
 
-  const colors = d3
-    .scaleOrdinal()
-    .domain(data) // colorbrewer 2.0, qualitative color set
-    .range(
-      [
-        "#8dd3c7",
-        "#ffffb3",
-        "#bebada",
-        "#fb8072",
-        "#80b1d3",
-        "#fdb462",
-        "#b3de69",
-        "#fccde5",
-        "#d9d9d9",
-        "#bc80bd",
-        "#ccebc5",
-        "#ffed6f",
-      ],
-      [
-        "ritu",
-        "indu",
-        "vasu",
-        "rudra",
-        "veda",
-        "aditya",
-        "dishi",
-        "bana",
-        "bhrama",
-        "netra",
-        "agni",
-        "rishi",
-      ]
-    );
-
-  const svg = d3
-    .select(container)
-    .append("svg") // create an <svg> element on the webpage
+  const svg = select(container)
+    .append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [-width / 2, -height / 2, width, height])
@@ -83,12 +97,12 @@ export function graph(data, container: HTMLElement) {
   svg
     .append("g")
     .selectAll()
-    .data(pie(data))
+    .data(createPie(data))
     .join("path")
-    .attr("fill", (d) => colors(d.data.chakra))
-    .attr("d", arc)
+    .attr("fill", (d) => chakraToColor(d.data.chakra))
+    .attr("d", diseaseArc)
     .append("title")
-    .text((d) => `${d.data.chakra}: ${d.data.chakra.toLocaleString()}`);
+    .text((d) => `${d.data.chakra}: ${d.data.chakra.toLocaleString()}`); // What's this for?
 
   svg
     .append("g")
@@ -96,17 +110,18 @@ export function graph(data, container: HTMLElement) {
     .attr("font-size", 12)
     .attr("text-anchor", "middle")
     .selectAll()
-    .data(pie(data))
+    .data(createPie(data))
     .join("text")
-    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
-    .call((text) =>
-      text
-        .append("tspan")
-        .attr("y", "-0.4em")
-        .attr("font-weight", "normal")
-        //.text(d => d.data.gene))
-        .text((d) => "")
-    ) // this should appear on mouseover only, so I've made it blank for now
+    .attr("transform", (d) => `translate(${diseaseArc.centroid(d)})`)
+    .call(
+      (text) =>
+        text
+          .append("tspan")
+          .attr("y", "-0.4em")
+          .attr("font-weight", "normal")
+          //.text(d => d.data.gene))
+          .text("") // TODO: Appear on mousover (blank for now)
+    )
     .call((text) =>
       text
         .filter((d) => d.endAngle - d.startAngle > 0.25)
@@ -114,6 +129,6 @@ export function graph(data, container: HTMLElement) {
         .attr("x", 0)
         .attr("y", "0.7em")
         .attr("fill-opacity", 0.7)
-        .text((d) => d.data.gene.toLocaleString("en-US"))
+        .text((d) => d.data.gene)
     );
 }
