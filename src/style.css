@@ -22,6 +22,26 @@ padding: 10px 10px 10px 10px; */
   font-weight: bold;
   color: purple;
   background-color: white;
+  /* justify-content: center;
+  align-content: center;
+  text-align: center; */
+}
+
+#diseaseText {
+  /* width: 1000px;
+margin: 10px auto 10px auto;
+padding: 10px 10px 10px 10px; */
+  z-index: 0;
+  font-family: system-ui;
+  font-size: 1em;
+  font-weight: normal;
+  color: purple;
+}
+
+#catalog {
+  position: relative;
+  z-index: 1;
+  top: -130px; /* closer to top of screen, is this a hack? */
   justify-content: center;
   align-content: center;
   text-align: center;
