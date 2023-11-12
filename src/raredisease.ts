@@ -56,7 +56,7 @@ const chakraToColor = scaleOrdinal(
     "#ccebc5",
     "#ffed6f",    
     "#8dd3c7",
-    "#ffffb3",
+    "#FFD9B2",
   ]
 );
 
