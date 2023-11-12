@@ -71,7 +71,7 @@ export async function readData(file: string, container: HTMLElement) {
       elite: d.Elite,
       inheritance: d.Inheritance,
       nvariants: parseInt(d.Nvariants) || 0,
-      phenoSys: d.Phenotype_System,
+      phenoSys: d.Phenotype,
       gene: d.Gene,
       promoter: d.Promoter,
       malacards: d.Malacards,
