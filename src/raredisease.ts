@@ -98,8 +98,8 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
     <font size="-1">${d.promoter} </font><br>
-    gene: ${d.gene}; ${d.phenoSys} <br>
     category: ${d.category}; ${d.chakra} chakra <br>
+    gene: ${d.gene}; ${d.phenoSys} <br>
     inheritance: ${d.inheritance} <br>
     number of phenotypes: ${d.nphenotypes} <br>
     number of genes: ${d.ngenes}`);
