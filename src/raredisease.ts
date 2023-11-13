@@ -1,80 +1,11 @@
-<<<<<<< Updated upstream
 import { csv, DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
 import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
 
-=======
-import {
-  csv,
-  DSVParsedArray,
-  PieArcDatum,
-  scaleOrdinal,
-  arc,
-  pie,
-  select,
-} from "d3";
-
-type Datum = {
-  disease: string;
-  disease_break: string;
-  category: string;
-  chakra: string;
-  nphenotypes: number;
-  ngenes: number;
-  elite: string;
-  inheritance: string;
-  nvariants: number;
-  phenoSys: string;
-  gene: string;
-  promoter: string;
-  malacards: string;
-};
-
-// Hacky workaround for type issues, probably inaccurate
-type DatumArcSVGElement = SVGPathElement & {
-  __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
-  __on: EventListener[];
-};
-
-const chakraToColor = scaleOrdinal(
-  [
-    "ritu",
-    "indu",
-    "vasu",
-    "rudra",
-    "veda",
-    "aditya",
-    "dishi",
-    "bana",
-    "bhrama",
-    "netra",
-    "agni",
-    "rishi",
-  ],
-  [
-    "#bebada",
-    "#fb8072",
-    "#80b1d3",
-    "#fdb462",
-    "#b3de69",
-    "#fccde5",
-    "#d9d9d9",
-    "#bc80bd",
-    "#ccebc5",
-    "#ffed6f",    
-    "#8dd3c7",
-    "#FFD9B2",
-  ]
-);
-
->>>>>>> Stashed changes
 export async function readData(file: string, container: HTMLElement) {
   const data: DSVParsedArray<Datum> = await csv(file, (d) => {
     return {
       disease: d.Disease,
-<<<<<<< Updated upstream
-=======
       disease_break: d.Disease_break,
->>>>>>> Stashed changes
       category: d.Category,
       chakra: d.Chakra,
       nphenotypes: parseInt(d.Nphenotype) || 0, // Nphenotype(s?)
@@ -157,21 +88,13 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
       .attr("stroke", "#fff")
       .attr("stroke-width", stroke)
       .transition()
-<<<<<<< Updated upstream
       .duration(500);
     // .attr(
     //   "transform",
     //   GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
     // );
 
-    select("#centerText").html(`${d.disease}`);
-=======
-      .duration(500)
-      //.attr("transform", GetTransform);
-
-    select("#centerText").html(`${d.disease_break}`);
-    // I've made a new column in the spreadsheet, "Disease_break" with <br> replacing spaces - but <br> doesn't do anything
->>>>>>> Stashed changes
+    select("#centerText").html(`${d.disease_break}`); // I've made a new column in the spreadsheet, "Disease_break" with <br> replacing spaces - but <br> doesn't do anything
 
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
@@ -190,26 +113,17 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     const x = Math.sin(midAngle) * dist;
     const y = Math.cos(midAngle) * dist;
     return "translate(" + x + "," + y + ")";
-<<<<<<< Updated upstream
   } */
-=======
-  }
-  */
->>>>>>> Stashed changes
-
-  function handleMouseOut(e: MouseEvent) {
-    const diseaseArc = e.target as SVGPathElement;
-
-    select(diseaseArc).attr("stroke-width", "0px");
-    select(diseaseArc)
-      .transition()
-      .duration(500)
-      .attr("transform", "translate(0,0)");
-
-    select("#mainText").html("Gene");
-  }
-<<<<<<< Updated upstream
 }
-=======
+
+function handleMouseOut(e: MouseEvent) {
+  const diseaseArc = e.target as SVGPathElement;
+
+  select(diseaseArc).attr("stroke-width", "0px");
+  select(diseaseArc)
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(0,0)");
+
+  select("#mainText").html("Gene");
 }
->>>>>>> Stashed changes
