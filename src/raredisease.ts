@@ -5,6 +5,7 @@ export async function readData(file: string, container: HTMLElement) {
   const data: DSVParsedArray<Datum> = await csv(file, (d) => {
     return {
       disease: d.Disease,
+      disease_break: d.Disease_break,
       category: d.Category,
       chakra: d.Chakra,
       nphenotypes: parseInt(d.Nphenotype) || 0, // Nphenotype(s?)
@@ -93,7 +94,7 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     //   GetTransform as ValueFn<SVGPathElement, unknown, string> // TODO: Fix misleading type inference
     // );
 
-    select("#centerText").html(`${d.disease}`);
+    select("#centerText").html(`${d.disease_break}`); // I've made a new column in the spreadsheet, "Disease_break" with <br> replacing spaces - but <br> doesn't do anything
 
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
@@ -113,16 +114,16 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     const y = Math.cos(midAngle) * dist;
     return "translate(" + x + "," + y + ")";
   } */
+}
 
-  function handleMouseOut(e: MouseEvent) {
-    const diseaseArc = e.target as SVGPathElement;
+function handleMouseOut(e: MouseEvent) {
+  const diseaseArc = e.target as SVGPathElement;
 
-    select(diseaseArc).attr("stroke-width", "0px");
-    select(diseaseArc)
-      .transition()
-      .duration(500)
-      .attr("transform", "translate(0,0)");
+  select(diseaseArc).attr("stroke-width", "0px");
+  select(diseaseArc)
+    .transition()
+    .duration(500)
+    .attr("transform", "translate(0,0)");
 
-    select("#mainText").html("Gene");
-  }
+  select("#mainText").html("Gene");
 }

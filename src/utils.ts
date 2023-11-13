@@ -2,6 +2,7 @@ import { PieArcDatum, scaleOrdinal } from "d3";
 
 export type Datum = {
   disease: string;
+  disease_break: string;
   category: string;
   chakra: string;
   nphenotypes: number;
