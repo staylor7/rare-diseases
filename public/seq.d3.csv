@@ -228,4 +228,8 @@ Pulmonary Hypertension,Pulmonary Hypertension,circulatory blood,rishi,239,2,yes,
 Idiopathic Thrombocytopenia Purpura,Idiopathic Thrombocytopenia Purpura,cirulatory,rishi,12,1,no,autosomal dominant  ,3,Blood and blood-forming tissues,SOCS1,GGCGGGGCCGGCAGGGGGCGGGGCCTCCCGCCGTCGCCAGCCCCGCCTCCGAGCCGGTTTAAAAGACTGGCGCAGGGGCGGGCGCCGAACAGAGCGAGCTGCGGCCGT,
 Catecholaminergic Polymorphic Ventricular Tachycardia,Catecholaminergic Polymorphic Ventricular Tachycardia,cirulatory,rishi,5,7,yes,autosomal dominant  ,6,Cardiovascular system,CASQ2,ATTTATTTTTAGCCTGAAACAACTGCATCCTAAAAATGGAGTTCCTAATGAGACAGAGGCTGAGCAGAGCTATGTAAGGTATCTGGGGCTTGGCCTCCCAGCCTCCCT,
 Long Qt Syndrome,Long Qt Syndrome,cirulatory,rishi,5,12,yes,Heterogeneous,92,Cardiovascular system,KCNH2,GCTGCAGGAGCCTGGGCGGGCTGCGGGGGAGGGGGCCGCTGGCTGGGCACCGGCGGGGCGGGGGAGCCTAGTGTGGCGGGGTGGGGGTGGGGACCTGGTAGAAGGAGG,
+<<<<<<< Updated upstream
 Postural Orthostatic Tachycardia Syndrome,Postural Orthostatic Tachycardia Syndrome,cirulatory,rishi,1,1,no,autosomal dominant  ,1,Nervous system,SLC44A1,GAGGGACTGGGCGCGGGAGGCGGGAGGCGGGGGGACAGAGGGAGGCGCCGCCGCCGCCGCCGCCCGCCCCTTTCCGCTGGGGAGCAGCTGCTGCAGCAGGAGCAGAGC,
+=======
+Postural Orthostatic Tachycardia Syndrome,Postural Orthostatic Tachycardia Syndrome,cirulatory,rishi,1,1,no,autosomal dominant  ,1,Nervous system,SLC44A1,GAGGGACTGGGCGCGGGAGGCGGGAGGCGGGGGGACAGAGGGAGGCGCCGCCGCCGCCGCCGCCCGCCCCTTTCCGCTGGGGAGCAGCTGCTGCAGCAGGAGCAGAGC,
+>>>>>>> Stashed changes
