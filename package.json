@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "yarn prettier --write .",
+    "format": "npx run prettier --write .",
     "lint": "npx eslint --fix .",
     "all": "npm run format && npm run lint && npm run build"
   },
