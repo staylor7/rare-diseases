@@ -1,6 +1,7 @@
 import { PieArcDatum, scaleOrdinal } from "d3";
 
 export type Datum = {
+  index: string;
   disease: string;
   disease_break: string;
   category: string;

@@ -4,11 +4,12 @@ import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
 export async function readData(file: string, container: HTMLElement) {
   const data: DSVParsedArray<Datum> = await csv(file, (d) => {
     return {
+      index: d.index,
       disease: d.Disease,
       disease_break: d.Disease_break,
       category: d.Category,
       chakra: d.Chakra,
-      nphenotypes: parseInt(d.Nphenotype) || 0, // Nphenotype(s?)
+      nphenotypes: parseInt(d.Nphenotype) || 0,
       ngenes: parseInt(d.Ngenes) || 0,
       elite: d.Elite,
       inheritance: d.Inheritance,
@@ -96,14 +97,32 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
 
     select("#centerText").html(`${d.disease_break}`); // I've made a new column in the spreadsheet, "Disease_break" with <br> replacing spaces - but <br> doesn't do anything
 
+    //audio playback
+    let name: string;
+    if (d.index.length === 1) {
+        name = '00' + d.index;
+    } else if (d.index.length === 2) {
+        name = '0' + d.index;
+    } else {
+        name = d.index;
+    }
+
+    const audio = new Audio(`/promoter_sounds_mp3/dna${name}.mp3`);
+    audio.play().catch((e: Error) => {
+        console.error("Error playing audio:", e.message);
+    });
+
+
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
     <font size="-1">${d.promoter} </font><br>
+    index: ${d.index} <br>
     category: ${d.category}; ${d.chakra} chakra <br>
     gene: ${d.gene}; ${d.phenoSys} <br>
     inheritance: ${d.inheritance} <br>
     number of phenotypes: ${d.nphenotypes} <br>
-    number of genes: ${d.ngenes}`);
+    number of genes: ${d.ngenes}`) 
+
   }
 
   // TODO: Make arc brighter
