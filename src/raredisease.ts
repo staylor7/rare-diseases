@@ -100,18 +100,17 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     //audio playback
     let name: string;
     if (d.index.length === 1) {
-        name = '00' + d.index;
+      name = "00" + d.index;
     } else if (d.index.length === 2) {
-        name = '0' + d.index;
+      name = "0" + d.index;
     } else {
-        name = d.index;
+      name = d.index;
     }
 
     const audio = new Audio(`/promoter_sounds_mp3/dna${name}.mp3`);
     audio.play().catch((e: Error) => {
-        console.error("Error playing audio:", e.message);
+      console.error("Error playing audio:", e.message);
     });
-
 
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
@@ -121,8 +120,7 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
     gene: ${d.gene}; ${d.phenoSys} <br>
     inheritance: ${d.inheritance} <br>
     number of phenotypes: ${d.nphenotypes} <br>
-    number of genes: ${d.ngenes}`) 
-
+    number of genes: ${d.ngenes}`);
   }
 
   // TODO: Make arc brighter
