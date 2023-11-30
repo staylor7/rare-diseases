@@ -28,6 +28,22 @@ export async function readData(file: string, container: HTMLElement) {
   }
 }
 
+function playAudio(d: Datum) {
+  let name: string;
+  if (d.index.length === 1) {
+    name = "00" + d.index;
+  } else if (d.index.length === 2) {
+    name = "0" + d.index;
+  } else {
+    name = d.index;
+  }
+
+  const audio = new Audio(`/promoter_sounds_mp3/dna${name}.mp3`);
+  audio.play().catch((e: Error) => {
+    console.error("Error playing audio:", e.message);
+  });
+}
+
 function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
   const width = data.length * 5,
     height = data.length * 5,
@@ -97,20 +113,7 @@ function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
 
     select("#centerText").html(`${d.disease_break}`); // I've made a new column in the spreadsheet, "Disease_break" with <br> replacing spaces - but <br> doesn't do anything
 
-    //audio playback
-    let name: string;
-    if (d.index.length === 1) {
-      name = "00" + d.index;
-    } else if (d.index.length === 2) {
-      name = "0" + d.index;
-    } else {
-      name = d.index;
-    }
-
-    const audio = new Audio(`/promoter_sounds_mp3/dna${name}.mp3`);
-    audio.play().catch((e: Error) => {
-      console.error("Error playing audio:", e.message);
-    });
+    playAudio(d);
 
     // TODO: if I put the promoter seqence in the center, how can I format this string to fit inside the center circle?
     select("#diseaseText").html(`<b>${d.disease} </b><br>
