@@ -1,33 +1,5 @@
-import { csv, DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
+import { DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
 import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
-
-export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
-  return await csv(path, (d) => {
-    return {
-      index: d.index,
-      disease: d.Disease,
-      disease_break: d.Disease_break,
-      category: d.Category,
-      chakra: d.Chakra,
-      nphenotypes: parseInt(d.Nphenotype) || 0,
-      ngenes: parseInt(d.Ngenes) || 0,
-      elite: d.Elite,
-      inheritance: d.Inheritance,
-      nvariants: parseInt(d.Nvariants) || 0,
-      phenoSys: d.Phenotype,
-      gene: d.Gene,
-      promoter: d.Promoter,
-      malacards: d.Malacards,
-    };
-  });
-}
-
-export async function draw(
-  data: DSVParsedArray<Datum>,
-  container: HTMLElement
-) {
-  graph(data, container);
-}
 
 function playAudio(d: Datum) {
   let name: string;
@@ -39,13 +11,10 @@ function playAudio(d: Datum) {
     name = d.index;
   }
 
-  const audio = new Audio(`/promoter_sounds_mp3/dna${name}.mp3`);
-  audio.play().catch((e: Error) => {
-    console.error("Error playing audio:", e.message);
-  });
+  new Audio(`/promoter_sounds_mp3/dna${name}.mp3`).play();
 }
 
-function graph(data: DSVParsedArray<Datum>, container: HTMLElement) {
+export function draw(data: DSVParsedArray<Datum>, container: HTMLElement) {
   const width = data.length * 5,
     height = data.length * 5,
     radius = Math.min(width, height) / 2,

@@ -1,4 +1,5 @@
-import { draw, parseCsv } from "./raredisease";
+import { draw } from "./raredisease";
+import { parseCsv } from "./utils";
 
 const csvPath = import.meta.env.BASE_URL + "seq.d3.csv";
 const container = document.getElementById("catalog");

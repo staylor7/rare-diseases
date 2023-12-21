@@ -1,4 +1,4 @@
-import { PieArcDatum, scaleOrdinal } from "d3";
+import { DSVParsedArray, PieArcDatum, csv, scaleOrdinal } from "d3";
 
 export type Datum = {
   index: string;
@@ -22,6 +22,27 @@ export type DatumArcSVGElement = SVGPathElement & {
   __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
   __on: EventListener[];
 };
+
+export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
+  return await csv(path, (d) => {
+    return {
+      index: d.index,
+      disease: d.Disease,
+      disease_break: d.Disease_break,
+      category: d.Category,
+      chakra: d.Chakra,
+      nphenotypes: parseInt(d.Nphenotype) || 0,
+      ngenes: parseInt(d.Ngenes) || 0,
+      elite: d.Elite,
+      inheritance: d.Inheritance,
+      nvariants: parseInt(d.Nvariants) || 0,
+      phenoSys: d.Phenotype,
+      gene: d.Gene,
+      promoter: d.Promoter,
+      malacards: d.Malacards,
+    };
+  });
+}
 
 export const chakraToColor = scaleOrdinal(
   [
