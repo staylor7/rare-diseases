@@ -1,5 +1,7 @@
-import { readData } from "./raredisease";
+import { draw, parseCsv } from "./raredisease";
 
+const csvPath = import.meta.env.BASE_URL + "seq.d3.csv";
 const container = document.getElementById("catalog");
+const data = await parseCsv(csvPath);
 
-if (container) readData(import.meta.env.BASE_URL + "seq.d3.csv", container);
+if (container) draw(data, container);

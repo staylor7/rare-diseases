@@ -1,8 +1,8 @@
 import { csv, DSVParsedArray, PieArcDatum, arc, pie, select } from "d3";
 import { Datum, DatumArcSVGElement, chakraToColor } from "./utils";
 
-export async function readData(file: string, container: HTMLElement) {
-  const data: DSVParsedArray<Datum> = await csv(file, (d) => {
+export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
+  return await csv(path, (d) => {
     return {
       index: d.index,
       disease: d.Disease,
@@ -20,12 +20,13 @@ export async function readData(file: string, container: HTMLElement) {
       malacards: d.Malacards,
     };
   });
+}
 
-  try {
-    graph(data, container);
-  } catch (e) {
-    console.error(e);
-  }
+export async function draw(
+  data: DSVParsedArray<Datum>,
+  container: HTMLElement
+) {
+  graph(data, container);
 }
 
 function playAudio(d: Datum) {
