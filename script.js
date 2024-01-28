@@ -28,7 +28,7 @@ d3.json('hierarchy.json').then(data => {
   
     // Create the SVG container
     const svg = d3.select("#chart").append("svg")
-      .attr("viewBox", [-width / 2, -height / 2, width, width])
+      .attr("viewBox", [-width / 2, -height / 2, width, height])
       .style("font", "10px sans-serif");
   
     // Append the arcs
@@ -48,7 +48,7 @@ d3.json('hierarchy.json').then(data => {
     // Add titles
     const format = d3.format(",d");
     path.append("title")
-        .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+        .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n`);
   
     // Add labels
     const label = svg.append("g")
@@ -61,7 +61,7 @@ d3.json('hierarchy.json').then(data => {
         .attr("dy", "0.35em")
         .attr("fill-opacity", d => +labelVisible(d.current))
         .attr("transform", d => labelTransform(d.current))
-        .text(d => d.data.name);
+        .text(d => d.data.label || d.data.name);
   
     // Add parent circle
     const parent = svg.append("circle")

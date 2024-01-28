@@ -22,37 +22,43 @@ function stratifyData(csvData) {
         children: []
     };
 
-    // Fields for layer 2
-    const layer2Fields = ["Nphenotype", "Ngenes", "Elite", "Inheritance", "Nvariants", "Phenotype", "Gene", "Promoter", "Malacards"];
-
     csvData.forEach(row => {
         // Create nodes for layer 1
-        let categoryNode = findOrCreateChild(root.children, row.Category);
-        let chakraNode = findOrCreateChild(root.children, row.Chakra);
-
-        // Create nodes for layer 2 under each layer 1 node
-        layer2Fields.forEach(field => {
-            categoryNode.children.push({
-                name: field,
-                children: [{ name: row[field], value: 3000 }]
-            });
-            chakraNode.children.push({
-                name: field,
-                children: [{ name: row[field], value: 3000 }]
-            });
-        });
+        let categoryNode = findOrCreateChild(root.children, row.Category, row.Chakra);
+    
+        // Create nodes for layer 2 (disease names) under each layer 1 node
+        let diseaseNode = {
+            name: row["Disease"],
+            children: [
+                { name: `'Nphenotype': ${row['Nphenotype']}`, value: 100},   
+                { name: `'Ngenes': ${row['Ngenes']}`, value: 100 },   
+                { name: `'Elite': ${row['Elite']}`, value: 100 },
+                { name: `'Inheritance': ${row['Inheritance']}`, value: 100 },
+                { name: `'Nvariants': ${row['Nvariants']}`, value: 100 },
+                { name: `'Phenotype': ${row['Phenotype']}`, value: 100 },
+                { name: `'Gene': ${row['Gene']}`, value: 100 },
+                { name: `'Promoter': ${row['Promoter']}`, value: 100, label: 'Promoter: hover for details' },
+                { name: `'Malacards': ${row['Malacards']}`, value: 100, label: 'Malacards: hover for details'},
+            ]
+        };
+    
+        categoryNode.children.push(diseaseNode);
     });
+    
+
 
     return root;
 }
 
-function findOrCreateChild(children, name) {
-    let child = children.find(c => c.name === name);
+function findOrCreateChild(children, name, opName) {
+    let fullName = `${name} (${opName})`;
+    let child = children.find(c => c.name === fullName);
     if (!child) {
-        child = { name: name, children: [] };
+        child = { name: fullName, children: [] };
         children.push(child);
     }
     return child;
 }
+
 
 convertCsvToJson();
