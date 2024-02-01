@@ -40,10 +40,88 @@ d3.json('hierarchy.json').then(data => {
         .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
         .attr("d", d => arc(d.current));
   
-    // Make them clickable if they have children
+
+  // ---------- chakra playback -------------
+
+    let currentChakraAudio = null; // Variable to keep track of currently playing chakra audio
+    let currentDiseaseAudio = null; // Variable to keep track of currently playing disease audio
+
+    // Function to extract chakra name from the string
+    function extractChakraName(name) {
+        const match = name.match(/\(([^)]+)\)/); // Regular expression to find text in parentheses
+        return match ? match[1] : null; // Return the matched group or null if no match
+    }
+
+    // Function to play chakra sound
+    function playChakraSound(chakraName) {
+      console.log("Playing chakra sound for:", chakraName);
+      const filePath = `/public/chakra_sounds_mp3/${chakraName}.mp3`;
+      if (currentChakraAudio) {
+          currentChakraAudio.pause();
+          currentChakraAudio.currentTime = 0;
+      }
+      currentChakraAudio = new Audio(filePath);
+      currentChakraAudio.loop = true;
+      currentChakraAudio.play().catch(e => {
+          console.error("Failed to play chakra audio:", e);
+      });
+  }
+
+
+    // ---- Disease sound ----------
+    let diseaseData = []; // This will store the parsed CSV data
+
+    // Function to load and parse the CSV
+    function loadDiseaseData() {
+        d3.csv("/public/seq.d3.csv").then(data => {
+            diseaseData = data;
+        });
+    }
+
+    // Call the function to load the data
+    loadDiseaseData();
+
     path.filter(d => d.children)
-        .style("cursor", "pointer")
-        .on("click", clicked);
+    .style("cursor", "pointer")
+    .on("click", (event, d) => {
+        clicked(event, d); // Existing click functionality
+
+        if (d.depth === 1) { // Check if it's a chakra node
+            const chakraName = extractChakraName(d.data.name);
+            if (chakraName) {
+                playChakraSound(chakraName); // Play the sound for the chakra
+            }
+        } else if (d.depth === 2) { // Check if it's a disease node
+            const diseaseName = d.data.name;
+            const rowNumber = getRowNumberForDisease(diseaseName);
+            if (rowNumber !== null) {
+                playDiseaseSound(rowNumber); // Play the sound for the disease
+            }
+        }
+    });
+
+    // Function to get the row number for a disease
+    function getRowNumberForDisease(diseaseName) {
+        const diseaseEntry = diseaseData.find(entry => entry.Disease === diseaseName);
+        return diseaseEntry ? diseaseEntry.index : null;
+    }
+  
+  // Function to play disease sound
+  function playDiseaseSound(rowNumber) {
+      console.log("Playing disease sound for row number:", rowNumber);
+      rowNumber = String(rowNumber).padStart(3, '0');
+      const filePath = `/public/promoter_sounds_mp3/dna${rowNumber}.mp3`;
+      if (currentDiseaseAudio) {
+          currentDiseaseAudio.pause();
+          currentDiseaseAudio.currentTime = 0;
+      }
+      currentDiseaseAudio = new Audio(filePath);
+      currentDiseaseAudio.play().catch(e => {
+          console.error("Failed to play disease audio:", e);
+      });
+  }
+
+
   
     // Add titles
     const format = d3.format(",d");
