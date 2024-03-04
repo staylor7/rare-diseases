@@ -8,4 +8,5 @@ The code here is a simple pie chart made with d3, based on this Observable noteb
 The radius of each arc corresponds to the number of genes associated with each disease ("Ngenes" on the spreadsheet). Other information is displayed on mouseover.
 
 Next I want to add sound to this chart, so if you click on a disease, you can hear its DNA promoter sequence. The background harmony comes from each category of disease; on the chart, these are colors.
+
 Data courtesy of Dr. Aditi Kantipuly, who is collaborating on this project; and thanks to Quinn Ouyang for expert programming help.
