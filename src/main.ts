@@ -83,7 +83,7 @@ export function draw(container: HTMLElement) {
       // Function to play chakra sound
       function playChakraSound(chakraName) {
         console.log("Playing chakra sound for:", chakraName);
-        const filePath = `/public/chakra_sounds_mp3/${chakraName}.mp3`;
+        const filePath = `chakra_sounds_mp3/${chakraName}.mp3`;
         if (currentChakraAudio) {
           currentChakraAudio.pause();
           currentChakraAudio.currentTime = 0;
@@ -100,7 +100,7 @@ export function draw(container: HTMLElement) {
 
       // Function to load and parse the CSV
       function loadDiseaseData() {
-        csv("/public/seq.d3.csv").then((data) => {
+        csv("seq.d3.csv").then((data) => {
           diseaseData = data;
         });
       }
@@ -142,7 +142,7 @@ export function draw(container: HTMLElement) {
       function playDiseaseSound(rowNumber) {
         console.log("Playing disease sound for row number:", rowNumber);
         rowNumber = String(rowNumber).padStart(3, "0");
-        const filePath = `/public/promoter_sounds_mp3/dna${rowNumber}.mp3`;
+        const filePath = `promoter_sounds_mp3/dna${rowNumber}.mp3`;
         if (currentDiseaseAudio) {
           currentDiseaseAudio.pause();
           currentDiseaseAudio.currentTime = 0;
