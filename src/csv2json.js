@@ -1,37 +1,38 @@
 import * as d3 from "d3";
 import { promises as fs } from "fs";
 
-async function convertCsvToJson() {
+async function convertCsvToJson(csvPath, jsonPath) {
   try {
-    const csvString = await fs.readFile("../public/seq.d3.csv", "utf8");
+    const csvString = await fs.readFile(csvPath, "utf8");
     const csvData = d3.csvParse(csvString);
+    console.log("Parsed " + csvPath);
 
     const stratifiedData = stratifyData(csvData);
     const json = JSON.stringify(stratifiedData, null, 2);
 
-    await fs.writeFile("hierarchy.json", json, "utf8");
-    console.log("JSON file created successfully");
+    await fs.writeFile(jsonPath, json, "utf8");
+    console.log("Exported " + jsonPath);
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
 function stratifyData(csvData) {
-  let root = {
+  const root = {
     name: "Root",
     children: [],
   };
 
   csvData.forEach((row) => {
     // Create nodes for layer 1
-    let categoryNode = findOrCreateChild(
+    const categoryNode = findOrCreateChild(
       root.children,
       row.Category,
       row.Chakra
     );
 
     // Create nodes for layer 2 (disease names) under each layer 1 node
-    let diseaseNode = {
+    const diseaseNode = {
       name: row["Disease"],
       children: [
         { name: `'Nphenotype': ${row["Nphenotype"]}`, value: 100 },
@@ -61,7 +62,7 @@ function stratifyData(csvData) {
 }
 
 function findOrCreateChild(children, name, opName) {
-  let fullName = `${name} (${opName})`;
+  const fullName = `${name} (${opName})`;
   let child = children.find((c) => c.name === fullName);
   if (!child) {
     child = { name: fullName, children: [] };
@@ -70,4 +71,10 @@ function findOrCreateChild(children, name, opName) {
   return child;
 }
 
-convertCsvToJson();
+if (process.argv.length == 4)
+  convertCsvToJson(process.argv[2], process.argv[3]);
+else
+  console.error(
+    "Expected 2 additional arguments (csvPath, jsonPath), got ",
+    process.argv.slice(2)
+  );
