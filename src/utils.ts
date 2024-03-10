@@ -1,6 +1,17 @@
 import { DSVParsedArray, PieArcDatum, csv, scaleOrdinal } from "d3";
 
 export type Datum = {
+  name: string;
+  children: Datum[];
+  value?: number;
+  label?: string;
+};
+
+/**
+ * @deprecated
+ * Represents a data point.
+ */
+export type FullDatum = {
   index: string;
   disease: string;
   disease_break: string;
@@ -17,12 +28,21 @@ export type Datum = {
   malacards: string;
 };
 
-// Hacky workaround for type issues, probably inaccurate
+/**
+ * @deprecated
+ * Represents a SVG element with additional properties for PieArcDatum.
+ */
 export type DatumArcSVGElement = SVGPathElement & {
   __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
   __on: EventListener[];
 };
 
+/**
+ * @deprecated
+ * Parses a CSV file and returns the data as an array of objects.
+ * @param path - The path to the CSV file.
+ * @returns A promise that resolves to the parsed CSV data.
+ */
 export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
   return await csv(path, (d) => {
     return {
@@ -44,6 +64,9 @@ export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
   });
 }
 
+/**
+ * Maps chakra values to corresponding colors.
+ */
 export const chakraToColor = scaleOrdinal(
   [
     "ritu",
