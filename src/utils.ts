@@ -1,11 +1,53 @@
-import { DSVParsedArray, PieArcDatum, csv, scaleOrdinal } from "d3";
+import {
+  DSVParsedArray,
+  HierarchyRectangularNode,
+  PieArcDatum,
+  csv,
+  scaleOrdinal,
+} from "d3";
 
-export type Datum = {
+/**
+ * Properties for each data object in `hierarchy.json`
+ */
+export interface Datum {
   name: string;
-  children: Datum[];
   value?: number;
   label?: string;
+  children?: Datum[];
+}
+
+/**
+ * Extended properties from {@link HierarchyRectangularNode}
+ */
+export type Rectangle = {
+  /**
+   * The left edge of the rectangle.
+   */
+  x0: number;
+
+  /**
+   * The top edge of the rectangle
+   */
+  y0: number;
+
+  /**
+   * The right edge of the rectangle.
+   */
+  x1: number;
+
+  /**
+   * The bottom edge of the rectangle.
+   */
+  y1: number;
 };
+
+/**
+ * Stores current and target locations for interactions
+ */
+export interface DatumNode extends HierarchyRectangularNode<Datum> {
+  target: Rectangle;
+  current: Rectangle;
+}
 
 /**
  * @deprecated
