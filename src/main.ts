@@ -34,7 +34,7 @@ export async function draw(container: HTMLElement) {
     .sum((d) => d.value || 0)
     .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-  const root = partition<Datum>().size([2 * Math.PI, hierarchy.height + 1])(
+  const root = partition<Datum>().size([2 * Math.PI, hierarchy.height + 2])(
     hierarchy
   );
   root.each((d) => (d.current = d));
