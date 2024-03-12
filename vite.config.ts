@@ -6,5 +6,8 @@ export default defineConfig(({ mode }) => {
       mode === "development"
         ? "/"
         : "http://www.stephenandrewtaylor.net/rare-diseases/index.html",
+    build: {
+      target: "esnext",
+    },
   };
 });
