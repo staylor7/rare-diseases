@@ -21,7 +21,7 @@ const container = document.getElementById("sunburst");
 
 if (container) draw(container);
 
-export async function draw(container: HTMLElement) {
+async function draw(container: HTMLElement) {
   const data = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (JSON should match object)
 
   // Specify the chart’s dimensions
@@ -44,7 +44,13 @@ export async function draw(container: HTMLElement) {
   ) as DatumNode; // WARNING: Unvalidated typing (assumes all `DatumNode.current` and `DatumNode.target` will exist)
   root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
 
-  // Create the arc generator
+  // SVG container
+  const svg = select<HTMLElement, Rectangle>(container)
+    .append<BaseType>("svg")
+    .attr("viewBox", [-width / 2, -height / 2, width, height])
+    .style("font", "10px sans-serif");
+
+  // Arc generator
   const arcGen = arc<Rectangle>()
     .startAngle((d) => d.x0)
     .endAngle((d) => d.x1)
@@ -52,12 +58,6 @@ export async function draw(container: HTMLElement) {
     .padRadius(radius * 1.5)
     .innerRadius((d) => d.y0 * radius)
     .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
-
-  // Create the SVG container
-  const svg = select<HTMLElement, Rectangle>(container)
-    .append<BaseType>("svg")
-    .attr("viewBox", [-width / 2, -height / 2, width, height])
-    .style("font", "10px sans-serif");
 
   // Append the arcs
   const path = svg
@@ -84,43 +84,36 @@ export async function draw(container: HTMLElement) {
   }
 
   function playChakraSound(chakraName: string) {
-    console.log("Playing chakra sound for:", chakraName);
     const filePath = `chakra_sounds_mp3/${chakraName}.mp3`;
     if (currentChakraAudio) {
       currentChakraAudio.pause();
       currentChakraAudio.currentTime = 0;
     }
+
     currentChakraAudio = new Audio(filePath);
     currentChakraAudio.loop = true;
-    currentChakraAudio.play().catch((e) => {
-      console.error("Failed to play chakra audio:", e);
-    });
+    currentChakraAudio.play();
   }
-
-  // ---- Disease sound ----------
-  const diseaseData = await csv("seq.d3.csv");
 
   path
     .filter((d) => !!d.children) // `!!` casts to bool
     .style("cursor", "pointer")
     .on("click", (event, d) => {
-      clicked(event, d); // Existing click functionality
+      handleClick(event, d); // Existing click functionality
 
       if (d.depth === 1) {
         // Check if it's a chakra node
         const chakraName = extractChakraName(d.data.name);
-        if (chakraName) {
-          playChakraSound(chakraName);
-        }
+        if (chakraName) playChakraSound(chakraName);
       } else if (d.depth === 2) {
         // Check if it's a disease node
         const diseaseName = d.data.name;
         const rowNumber = getRowNumberForDisease(diseaseName);
-        if (rowNumber !== null) {
-          playDiseaseSound(rowNumber); // Play the sound for the disease
-        }
+        if (rowNumber !== null) playDiseaseSound(rowNumber); // Play the sound for the disease
       }
     });
+
+  const diseaseData = await csv("seq.d3.csv");
 
   // Function to get the row number for a disease
   function getRowNumberForDisease(diseaseName: string) {
@@ -130,15 +123,16 @@ export async function draw(container: HTMLElement) {
     return diseaseEntry ? diseaseEntry.index : null;
   }
 
-  // Function to play disease sound
   function playDiseaseSound(rowNumber: string) {
     console.log("Playing disease sound for row number:", rowNumber);
     rowNumber = rowNumber.padStart(3, "0");
     const filePath = `promoter_sounds_mp3/dna${rowNumber}.mp3`;
+
     if (currentDiseaseAudio) {
       currentDiseaseAudio.pause();
       currentDiseaseAudio.currentTime = 0;
     }
+
     currentDiseaseAudio = new Audio(filePath);
     currentDiseaseAudio.play().catch((e) => {
       console.error("Failed to play disease audio:", e);
@@ -176,10 +170,10 @@ export async function draw(container: HTMLElement) {
     .attr("r", radius)
     .attr("fill", "none")
     .attr("pointer-events", "all")
-    .on("click", clicked);
+    .on("click", handleClick);
 
-  // Handle zoom on click.
-  function clicked(_: Event, p: DatumNode) {
+  // Handle zoom on click
+  function handleClick(_: Event, p: DatumNode) {
     parent.datum(p.parent || root);
 
     root.each(
