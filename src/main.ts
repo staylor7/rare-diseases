@@ -74,6 +74,7 @@ const path = svg
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
   )
+  .attr("pointer-events", (d) => (shouldBeVisible(d.current) ? "auto" : "none"))
   .attr("d", (d) => arcGen(d.current));
 
 path
