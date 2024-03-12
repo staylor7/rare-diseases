@@ -28,6 +28,7 @@ if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 const WIDTH = 928; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 6; // px
+const TRANSITION_TIME = 750; // ms
 const DATA = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (Assumes JSON exactly matches `Datum`)
 
 // Create the color scale
@@ -71,7 +72,7 @@ const path = svg
     return color(d.data.name);
   })
   .attr("fill-opacity", (d) =>
-    arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
+    shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
   )
   .attr("d", (d) => arcGen(d.current));
 
@@ -113,7 +114,7 @@ const label = svg
   .data(root.descendants().slice(1))
   .join("text")
   .attr("dy", "0.35em")
-  .attr("fill-opacity", (d) => +labelVisible(d.current))
+  .attr("fill-opacity", (d) => +shouldBeVisible(d.current))
   .attr("transform", (d) => labelTransform(d.current))
   .text((d) => d.data.label || d.data.name);
 
@@ -142,7 +143,7 @@ function handleClick(_: Event, p: DatumNode) {
       }) // Should set all `DatumNode.target`
   );
 
-  const t = svg.transition().duration(750);
+  const t = svg.transition().duration(TRANSITION_TIME);
 
   // Transition the data on all arcs, even the ones that aren’t visible,
   // so that if this transition is interrupted, entering arcs will start
@@ -157,13 +158,15 @@ function handleClick(_: Event, p: DatumNode) {
       return (
         (this instanceof Element &&
           !!+(this.getAttribute("fill-opacity") ?? false)) ||
-        arcVisible(d.target)
+        shouldBeVisible(d.target)
       );
     })
     .attr("fill-opacity", (d) =>
-      arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
+      shouldBeVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
     )
-    .attr("pointer-events", (d) => (arcVisible(d.target) ? "auto" : "none"))
+    .attr("pointer-events", (d) =>
+      shouldBeVisible(d.target) ? "auto" : "none"
+    )
     .attrTween("d", (d) => () => arcGen(d.current) ?? "");
 
   label
@@ -171,24 +174,21 @@ function handleClick(_: Event, p: DatumNode) {
       return (
         (this instanceof Element &&
           !!+(this.getAttribute("fill-opacity") ?? false)) ||
-        labelVisible(d.target)
+        shouldBeVisible(d.target)
       );
     })
     .transition(t)
-    .attr("fill-opacity", (d) => +labelVisible(d.target))
+    .attr("fill-opacity", (d) => +shouldBeVisible(d.target))
     .attrTween("transform", (d) => () => labelTransform(d.current));
 }
 
-function arcVisible(d: Rectangle) {
-  return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
-}
-
-function labelVisible(d: Rectangle) {
-  return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+function shouldBeVisible(d: Rectangle) {
+  return d.y1 <= 2 && d.y0 >= 1 && d.x1 > d.x0;
 }
 
 function labelTransform(d: Rectangle) {
   const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
   const y = ((d.y0 + d.y1) / 2) * RADIUS;
+
   return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 }
