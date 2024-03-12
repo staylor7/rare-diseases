@@ -14,13 +14,13 @@ import {
   scaleOrdinal,
   BaseType,
 } from "d3";
-import { Datum, DatumNode, Rectangle } from "./types";
 import {
   extractChakraName,
   getRowNumberForDisease,
   playChakraSound,
   playDiseaseSound,
 } from "./audio";
+import { Datum, DatumNode, Rectangle } from "./types";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
@@ -31,28 +31,24 @@ const RADIUS = WIDTH / 6; // px
 const TRANSITION_TIME = 750; // ms
 const DATA = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (Assumes JSON exactly matches `Datum`)
 
-// Create the color scale
 const color = scaleOrdinal(
   quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
 );
 
-// Compute the layout
-const hierarchyGen = hierarchy(DATA)
+const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
   .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-const root = partition<Datum>().size([2 * Math.PI, hierarchyGen.height + 1])(
-  hierarchyGen
+const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
+  hierarchyNode
 ) as DatumNode; // WARNING: Unvalidated typing (assumes all `DatumNode.current` and `DatumNode.target` will exist)
 root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
 
-// SVG container
 const svg = select<HTMLElement, Rectangle>(CONTAINER)
   .append<BaseType>("svg")
   .attr("viewBox", [-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT])
   .style("font", "10px sans-serif");
 
-// Arc generator
 const arcGen = arc<Rectangle>()
   .startAngle((d) => d.x0)
   .endAngle((d) => d.x1)
@@ -61,7 +57,7 @@ const arcGen = arc<Rectangle>()
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
-// Append the arcs
+// Draw arcs
 const path = svg
   .append("g")
   .selectAll("path")
@@ -81,7 +77,7 @@ path
   .filter((d) => !!d.children) // `!!` casts to bool
   .style("cursor", "pointer")
   .on("click", (event, d) => {
-    handleClick(event, d); // Existing click functionality
+    handleClick(event, d);
 
     if (d.depth === 1) {
       // Check if it's a chakra node
@@ -91,11 +87,11 @@ path
       // Check if it's a disease node
       const diseaseName = d.data.name;
       const rowNumber = getRowNumberForDisease(diseaseName);
-      if (rowNumber !== null) playDiseaseSound(rowNumber); // Play the sound for the disease
+      if (rowNumber !== null) playDiseaseSound(rowNumber);
     }
   });
 
-// Add titles
+// Draw titles
 path.append("title").text(
   (d) =>
     `${d
@@ -105,7 +101,7 @@ path.append("title").text(
       .join("/")}\n`
 );
 
-// Add labels
+// Draw labels
 const label = svg
   .append("g")
   .attr("pointer-events", "none")
@@ -119,7 +115,7 @@ const label = svg
   .attr("transform", (d) => labelTransform(d.current))
   .text((d) => d.data.label || d.data.name);
 
-// Add parent circle
+// Draw circle
 const parent = svg
   .append("circle")
   .datum(root)
@@ -130,6 +126,8 @@ const parent = svg
 
 // Handle zoom on click
 function handleClick(_: Event, p: DatumNode) {
+  const t = svg.transition().duration(TRANSITION_TIME);
+
   parent.datum(p.parent || root);
 
   root.each(
@@ -143,8 +141,6 @@ function handleClick(_: Event, p: DatumNode) {
         y1: Math.max(0, d.y1 - p.depth),
       }) // Should set all `DatumNode.target`
   );
-
-  const t = svg.transition().duration(TRANSITION_TIME);
 
   // Transition the data on all arcs, even the ones that aren’t visible,
   // so that if this transition is interrupted, entering arcs will start
