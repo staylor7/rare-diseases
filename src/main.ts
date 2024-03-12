@@ -98,17 +98,7 @@ export async function draw(container: HTMLElement) {
   }
 
   // ---- Disease sound ----------
-  let diseaseData = []; // This will store the parsed CSV data
-
-  // Function to load and parse the CSV
-  function loadDiseaseData() {
-    csv("seq.d3.csv").then((data) => {
-      diseaseData = data;
-    });
-  }
-
-  // Call the function to load the data
-  loadDiseaseData();
+  const diseaseData = await csv("seq.d3.csv");
 
   path
     .filter((d) => !!d.children) // `!!` casts to bool
