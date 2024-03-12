@@ -67,6 +67,7 @@ export type FullDatum = {
 
 /**
  * Maps chakra values to corresponding colors.
+ * @deprecated
  */
 export const chakraToColor = scaleOrdinal(
   [
