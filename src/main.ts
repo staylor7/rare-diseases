@@ -3,7 +3,6 @@
  */
 
 import {
-  csv,
   interpolate,
   interpolateRainbow,
   json,
@@ -16,19 +15,20 @@ import {
   BaseType,
 } from "d3";
 import { Datum, DatumNode, Rectangle } from "./types";
+import {
+  extractChakraName,
+  getRowNumberForDisease,
+  playChakraSound,
+  playDiseaseSound,
+} from "./audio";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
-const WIDTH = 928;
-const HEIGHT = WIDTH;
-const RADIUS = WIDTH / 6;
-const DATA = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (JSON should match object)
-const CSV = await csv("seq.d3.csv");
-
-// Chakra playback
-let currentChakraAudio = new Audio();
-let currentDiseaseAudio = new Audio();
+const WIDTH = 928; // px
+const HEIGHT = WIDTH; // px
+const RADIUS = WIDTH / 6; // px
+const DATA = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (Assumes JSON exactly matches `Datum`)
 
 // Create the color scale
 const color = scaleOrdinal(
@@ -75,23 +75,6 @@ const path = svg
   )
   .attr("d", (d) => arcGen(d.current));
 
-function extractChakraName(name: string) {
-  const match = name.match(/\(([^)]+)\)/); // Regular expression to find text in parentheses
-  return match ? match[1] : null; // Return the matched group or null if no match
-}
-
-function playChakraSound(chakraName: string) {
-  const filePath = `chakra_sounds_mp3/${chakraName}.mp3`;
-  if (currentChakraAudio) {
-    currentChakraAudio.pause();
-    currentChakraAudio.currentTime = 0;
-  }
-
-  currentChakraAudio = new Audio(filePath);
-  currentChakraAudio.loop = true;
-  currentChakraAudio.play();
-}
-
 path
   .filter((d) => !!d.children) // `!!` casts to bool
   .style("cursor", "pointer")
@@ -109,28 +92,6 @@ path
       if (rowNumber !== null) playDiseaseSound(rowNumber); // Play the sound for the disease
     }
   });
-
-// Function to get the row number for a disease
-function getRowNumberForDisease(diseaseName: string) {
-  const diseaseEntry = CSV.find((entry) => entry.Disease === diseaseName);
-  return diseaseEntry ? diseaseEntry.index : null;
-}
-
-function playDiseaseSound(rowNumber: string) {
-  console.log("Playing disease sound for row number:", rowNumber);
-  rowNumber = rowNumber.padStart(3, "0");
-  const filePath = `promoter_sounds_mp3/dna${rowNumber}.mp3`;
-
-  if (currentDiseaseAudio) {
-    currentDiseaseAudio.pause();
-    currentDiseaseAudio.currentTime = 0;
-  }
-
-  currentDiseaseAudio = new Audio(filePath);
-  currentDiseaseAudio.play().catch((e) => {
-    console.error("Failed to play disease audio:", e);
-  });
-}
 
 // Add titles
 path.append("title").text(
