@@ -83,7 +83,7 @@ export async function draw(container: HTMLElement) {
     return match ? match[1] : null; // Return the matched group or null if no match
   }
 
-  function playChakraSound(chakraName) {
+  function playChakraSound(chakraName: string) {
     console.log("Playing chakra sound for:", chakraName);
     const filePath = `chakra_sounds_mp3/${chakraName}.mp3`;
     if (currentChakraAudio) {
@@ -123,7 +123,7 @@ export async function draw(container: HTMLElement) {
     });
 
   // Function to get the row number for a disease
-  function getRowNumberForDisease(diseaseName) {
+  function getRowNumberForDisease(diseaseName: string) {
     const diseaseEntry = diseaseData.find(
       (entry) => entry.Disease === diseaseName
     );
@@ -131,9 +131,9 @@ export async function draw(container: HTMLElement) {
   }
 
   // Function to play disease sound
-  function playDiseaseSound(rowNumber) {
+  function playDiseaseSound(rowNumber: string) {
     console.log("Playing disease sound for row number:", rowNumber);
-    rowNumber = String(rowNumber).padStart(3, "0");
+    rowNumber = rowNumber.padStart(3, "0");
     const filePath = `promoter_sounds_mp3/dna${rowNumber}.mp3`;
     if (currentDiseaseAudio) {
       currentDiseaseAudio.pause();
@@ -235,15 +235,15 @@ export async function draw(container: HTMLElement) {
       .attrTween("transform", (d) => () => labelTransform(d.current));
   }
 
-  function arcVisible(d) {
+  function arcVisible(d: Rectangle) {
     return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
   }
 
-  function labelVisible(d) {
+  function labelVisible(d: Rectangle) {
     return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
   }
 
-  function labelTransform(d) {
+  function labelTransform(d: Rectangle) {
     const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
     const y = ((d.y0 + d.y1) / 2) * radius;
     return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
