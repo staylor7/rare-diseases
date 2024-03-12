@@ -15,7 +15,7 @@ import {
   scaleOrdinal,
   BaseType,
 } from "d3";
-import { Datum, DatumNode, Rectangle } from "./utils";
+import { Datum, DatumNode, Rectangle } from "./types";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
