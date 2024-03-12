@@ -3,8 +3,8 @@ import {
   interpolate,
   interpolateRainbow,
   json,
-  hierarchy as d3Hierarchy,
-  arc as d3Arc,
+  hierarchy,
+  arc,
   select,
   partition,
   quantize,
@@ -30,17 +30,17 @@ export async function draw(container: HTMLElement) {
   );
 
   // Compute the layout
-  const hierarchy = d3Hierarchy(data)
+  const hierarchyGen = hierarchy(data)
     .sum((d) => d.value || 0)
     .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-  const root = partition<Datum>().size([2 * Math.PI, hierarchy.height + 2])(
-    hierarchy
+  const root = partition<Datum>().size([2 * Math.PI, hierarchyGen.height + 2])(
+    hierarchyGen
   );
   root.each((d) => (d.current = d));
 
   // Create the arc generator
-  const arc = d3Arc()
+  const arcGen = arc()
     .startAngle((d) => d.x0)
     .endAngle((d) => d.x1)
     .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
@@ -67,7 +67,7 @@ export async function draw(container: HTMLElement) {
     .attr("fill-opacity", (d) =>
       arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
     )
-    .attr("d", (d) => arc(d.current));
+    .attr("d", (d) => arcGen(d.current));
 
   // Chakra playback
   let currentChakraAudio = new Audio();
@@ -223,8 +223,7 @@ export async function draw(container: HTMLElement) {
         arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
       )
       .attr("pointer-events", (d) => (arcVisible(d.target) ? "auto" : "none"))
-
-      .attrTween("d", (d) => () => arc(d.current));
+      .attrTween("d", (d) => () => arcGen(d.current));
 
     label
       .filter(function (d) {
