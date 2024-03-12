@@ -7,8 +7,7 @@ let currentChakraAudio = new Audio();
 let currentDiseaseAudio = new Audio();
 
 export async function playChakraSound(chakraName: string) {
-  const path = (await import(`../assets/chakra_sounds_mp3/${chakraName}.mp3`))
-    .default;
+  const path = (await import(`../assets/chakra/${chakraName}.mp3`)).default;
 
   if (currentChakraAudio) {
     currentChakraAudio.pause();
@@ -22,9 +21,7 @@ export async function playChakraSound(chakraName: string) {
 
 export async function playDiseaseSound(rowNumber: string) {
   const path = (
-    await import(
-      `../assets/promoter_sounds_mp3/dna${rowNumber.padStart(3, "0")}.mp3`
-    )
+    await import(`../assets/promoter/dna${rowNumber.padStart(3, "0")}.mp3`)
   ).default;
 
   if (currentDiseaseAudio) {
