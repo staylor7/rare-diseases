@@ -5,7 +5,6 @@
 import {
   interpolate,
   interpolateRainbow,
-  json,
   hierarchy,
   arc,
   select,
@@ -21,6 +20,7 @@ import {
   playDiseaseSound,
 } from "./audio";
 import { Datum, DatumNode, Rectangle } from "./types";
+import json from "./hierarchy.json";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
@@ -29,7 +29,7 @@ const WIDTH = 928; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 6; // px
 const TRANSITION_TIME = 750; // ms
-const DATA = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (Assumes JSON exactly matches `Datum`)
+const DATA: Datum = json;
 
 const color = scaleOrdinal(
   quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
