@@ -180,7 +180,12 @@ function handleClick(_: Event, p: DatumNode) {
 }
 
 function shouldBeVisible(d: Rectangle) {
-  return d.y1 <= 2 && d.y0 >= 1 && d.x1 > d.x0;
+  return (
+    d.y1 <= 2 &&
+    d.y0 >= 1 &&
+    d.x1 > d.x0 &&
+    (d.y1 - d.y0) * (d.x1 - d.x0) > 0.001 // Hides labels with no arc
+  );
 }
 
 function labelTransform(d: Rectangle) {
