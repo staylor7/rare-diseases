@@ -4,8 +4,8 @@ export default defineConfig(({ mode }) => {
   return {
     base:
       mode === "development"
-        ? "/"
-        : "http://www.stephenandrewtaylor.net/rare-diseases/index.html",
+        ? "https://localhost:5173/rare-diseases"
+        : "https://stephenandrewtaylor.net/rare-test",
     build: {
       target: "esnext",
     },
