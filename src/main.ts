@@ -1,3 +1,7 @@
+/**
+ * Based off of https://observablehq.com/@d3/zoomable-sunburst
+ */
+
 import {
   csv,
   interpolate,
@@ -9,15 +13,16 @@ import {
   partition,
   quantize,
   scaleOrdinal,
+  BaseType,
 } from "d3";
-import { Datum } from "./utils";
+import { Datum, DatumNode, Rectangle } from "./utils";
 
 const container = document.getElementById("sunburst");
 
 if (container) draw(container);
 
 export async function draw(container: HTMLElement) {
-  const data = (await json("hierarchy.json")) as Datum; // WARNING: Forced typing (not validated, risks runtime error)
+  const data = (await json("hierarchy.json")) as Datum; // WARNING: Unvalidated typing (JSON should match object)
 
   // Specify the chart’s dimensions
   const width = 928;
@@ -26,7 +31,7 @@ export async function draw(container: HTMLElement) {
 
   // Create the color scale
   const color = scaleOrdinal(
-    quantize(interpolateRainbow, data.children.length + 1)
+    quantize(interpolateRainbow, data.children?.length ?? 0 + 1)
   );
 
   // Compute the layout
@@ -36,11 +41,11 @@ export async function draw(container: HTMLElement) {
 
   const root = partition<Datum>().size([2 * Math.PI, hierarchyGen.height + 2])(
     hierarchyGen
-  );
-  root.each((d) => (d.current = d));
+  ) as DatumNode; // WARNING: Unvalidated typing (assumes all `DatumNode.current` and `DatumNode.target` will exist)
+  root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
 
   // Create the arc generator
-  const arcGen = arc()
+  const arcGen = arc<Rectangle>()
     .startAngle((d) => d.x0)
     .endAngle((d) => d.x1)
     .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
@@ -49,8 +54,8 @@ export async function draw(container: HTMLElement) {
     .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
 
   // Create the SVG container
-  const svg = select(container)
-    .append("svg")
+  const svg = select<HTMLElement, Rectangle>(container)
+    .append<BaseType>("svg")
     .attr("viewBox", [-width / 2, -height / 2, width, height])
     .style("font", "10px sans-serif");
 
@@ -61,7 +66,7 @@ export async function draw(container: HTMLElement) {
     .data(root.descendants().slice(1))
     .join("path")
     .attr("fill", (d) => {
-      while (d.depth > 1) d = d.parent;
+      while (d.depth > 1 && d.parent) d = d.parent;
       return color(d.data.name);
     })
     .attr("fill-opacity", (d) =>
@@ -73,13 +78,11 @@ export async function draw(container: HTMLElement) {
   let currentChakraAudio = new Audio();
   let currentDiseaseAudio = new Audio();
 
-  // Function to extract chakra name from the string
   function extractChakraName(name: string) {
     const match = name.match(/\(([^)]+)\)/); // Regular expression to find text in parentheses
     return match ? match[1] : null; // Return the matched group or null if no match
   }
 
-  // Function to play chakra sound
   function playChakraSound(chakraName) {
     console.log("Playing chakra sound for:", chakraName);
     const filePath = `chakra_sounds_mp3/${chakraName}.mp3`;
@@ -108,7 +111,7 @@ export async function draw(container: HTMLElement) {
   loadDiseaseData();
 
   path
-    .filter((d) => d.children)
+    .filter((d) => !!d.children) // `!!` casts to bool
     .style("cursor", "pointer")
     .on("click", (event, d) => {
       clicked(event, d); // Existing click functionality
@@ -117,7 +120,7 @@ export async function draw(container: HTMLElement) {
         // Check if it's a chakra node
         const chakraName = extractChakraName(d.data.name);
         if (chakraName) {
-          playChakraSound(chakraName); // Play the sound for the chakra
+          playChakraSound(chakraName);
         }
       } else if (d.depth === 2) {
         // Check if it's a disease node
@@ -186,7 +189,7 @@ export async function draw(container: HTMLElement) {
     .on("click", clicked);
 
   // Handle zoom on click.
-  function clicked(event, p) {
+  function clicked(_: Event, p: DatumNode) {
     parent.datum(p.parent || root);
 
     root.each(
@@ -202,7 +205,7 @@ export async function draw(container: HTMLElement) {
             Math.PI,
           y0: Math.max(0, d.y0 - p.depth),
           y1: Math.max(0, d.y1 - p.depth),
-        })
+        }) // Should set all `DatumNode.target`
     );
 
     const t = svg.transition().duration(750);
@@ -217,17 +220,25 @@ export async function draw(container: HTMLElement) {
         return (t) => (d.current = i(t));
       })
       .filter(function (d) {
-        return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+        return (
+          (this instanceof Element &&
+            !!+(this.getAttribute("fill-opacity") ?? false)) ||
+          arcVisible(d.target)
+        );
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
       )
       .attr("pointer-events", (d) => (arcVisible(d.target) ? "auto" : "none"))
-      .attrTween("d", (d) => () => arcGen(d.current));
+      .attrTween("d", (d) => () => arcGen(d.current) ?? "");
 
     label
       .filter(function (d) {
-        return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+        return (
+          (this instanceof Element &&
+            !!+(this.getAttribute("fill-opacity") ?? false)) ||
+          labelVisible(d.target)
+        );
       })
       .transition(t)
       .attr("fill-opacity", (d) => +labelVisible(d.target))
