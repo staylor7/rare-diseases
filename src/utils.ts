@@ -1,10 +1,4 @@
-import {
-  DSVParsedArray,
-  HierarchyRectangularNode,
-  PieArcDatum,
-  csv,
-  scaleOrdinal,
-} from "d3";
+import { HierarchyRectangularNode, scaleOrdinal } from "d3";
 
 /**
  * Properties for each data object in `hierarchy.json`
@@ -43,6 +37,7 @@ export type Rectangle = {
 
 /**
  * Stores current and target locations for interactions
+ * @todo Verify this is the correct polymorphism (Should {@link DatumNode} and {@link Rectangle} should be somewhat interchangeable?)
  */
 export interface DatumNode extends HierarchyRectangularNode<Datum> {
   target: Rectangle;
@@ -69,42 +64,6 @@ export type FullDatum = {
   promoter: string;
   malacards: string;
 };
-
-/**
- * @deprecated
- * Represents a SVG element with additional properties for PieArcDatum.
- */
-export type DatumArcSVGElement = SVGPathElement & {
-  __data__: PieArcDatum<Datum>; // https://d3js.org/d3-selection/joining#selection_data
-  __on: EventListener[];
-};
-
-/**
- * @deprecated
- * Parses a CSV file and returns the data as an array of objects.
- * @param path - The path to the CSV file.
- * @returns A promise that resolves to the parsed CSV data.
- */
-export async function parseCsv(path: string): Promise<DSVParsedArray<Datum>> {
-  return await csv(path, (d) => {
-    return {
-      index: d.index,
-      disease: d.Disease,
-      disease_break: d.Disease_break,
-      category: d.Category,
-      chakra: d.Chakra,
-      nphenotypes: parseInt(d.Nphenotype) || 0,
-      ngenes: parseInt(d.Ngenes) || 0,
-      elite: d.Elite,
-      inheritance: d.Inheritance,
-      nvariants: parseInt(d.Nvariants) || 0,
-      phenoSys: d.Phenotype,
-      gene: d.Gene,
-      promoter: d.Promoter,
-      malacards: d.Malacards,
-    };
-  });
-}
 
 /**
  * Maps chakra values to corresponding colors.
