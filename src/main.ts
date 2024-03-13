@@ -25,9 +25,9 @@ import json from "./hierarchy.json";
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
-const WIDTH = 928; // px
+const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
-const RADIUS = WIDTH / 6; // px
+const RADIUS = WIDTH / 5; // px
 const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
@@ -47,7 +47,7 @@ root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
 const svg = select<HTMLElement, Rectangle>(CONTAINER)
   .append<BaseType>("svg")
   .attr("viewBox", [-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT])
-  .style("font", "10px sans-serif");
+  .attr("preserveAspectRatio", "xMinYMin meet");
 
 const arcGen = arc<Rectangle>()
   .startAngle((d) => d.x0)
