@@ -42,8 +42,16 @@ function stratifyData(csvData) {
         { name: `Nvariants: ${row["Nvariants"]}`, value: 100 },
         { name: `Phenotype: ${row["Phenotype"]}`, value: 100 },
         { name: `Gene: ${row["Gene"]}`, value: 100 },
-        { name: `Promoter: ${row["Promoter"]}`, value: 100, label: "Promoter: hover for details" },
-        { name: `Description: ${row["Description"]}`, value: 100, label: "Description: hover for details" },
+        {
+          name: `Promoter: ${row["Promoter"]}`,
+          value: 100,
+          label: "Promoter: hover for details",
+        },
+        {
+          name: `Description: ${row["Description"]}`,
+          value: 100,
+          label: "Description: hover for details",
+        },
         { name: `Link: ${row["Link"]}`, value: 100 },
       ],
     };
@@ -64,7 +72,6 @@ function findOrCreateChildWithChakra(children, name, chakra) {
   }
   return child;
 }
-
 
 if (process.argv.length == 4)
   convertCsvToJson(process.argv[2], process.argv[3]);
