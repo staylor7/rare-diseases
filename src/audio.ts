@@ -33,10 +33,6 @@ export async function playDiseaseSound(rowNumber: string) {
   currentDiseaseAudio.play();
 }
 
-export function extractChakraName(name: string) {
-  return name.match(/\(([^)]+)\)/)?.[1]; // Extracts chakra name from paranthesis (e.g. "endocrine (ritu)" -> "ritu")
-}
-
 export function getRowNumberForDisease(diseaseName: string) {
   const diseaseEntry = CSV.find((entry) => entry.Disease === diseaseName);
   return diseaseEntry ? diseaseEntry.index : null;

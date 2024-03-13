@@ -5,6 +5,7 @@ import { HierarchyRectangularNode } from "d3";
  */
 export type Datum = {
   name: string;
+  chakra?: string;
   value?: number;
   label?: string;
   children?: Datum[];

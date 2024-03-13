@@ -1,16 +1,28 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" type="text/css" href="src/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catalog of Rare Diseases</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-    <div id="header">Catalog of Rare Diseases</div>
-    <div id="sunburst"></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" type="text/css" href="src/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalog of Rare Diseases</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <div id="header">Catalog of Rare Diseases</div>
+  <div id="sunburst"></div>
+
+  <!-- Popup for displaying disease details -->
+  <div id="diseasePopup"
+    style="display: none; position: absolute; z-index: 10; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <button id="closePopupButton" style="float: right;">&times;</button>
+    <div id="diseaseDetails"></div>
+  </div>
+
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
