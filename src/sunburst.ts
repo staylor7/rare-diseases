@@ -13,20 +13,15 @@ import {
   scaleOrdinal,
   BaseType,
 } from "d3";
-import {
-  getRowNumberForDisease,
-  playChakraSound,
-  playDiseaseSound,
-} from "./audio";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
-import "./style.css";
 import handlePopup from "./popup";
+import playDatum from "./audio/datum";
+
+export const TRANSITION_TIME = 750; // ms
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
-
-export const TRANSITION_TIME = 750; // ms
 
 const WIDTH = 928; // px
 const HEIGHT = WIDTH; // px
@@ -83,19 +78,9 @@ const path = svg
 path
   .filter((d) => !!d.children) // `!!` casts to bool
   .style("cursor", "pointer")
-  .on("click", (event, d) => {
-    handleClick(event, d);
-
-    if (d.depth === 1) {
-      // Check if it's a chakra node
-      const chakraName = d.data.chakra;
-      if (chakraName) playChakraSound(chakraName);
-    } else if (d.depth === 2) {
-      // Check if it's a disease node
-      const diseaseName = d.data.name;
-      const rowNumber = getRowNumberForDisease(diseaseName);
-      if (rowNumber !== null) playDiseaseSound(rowNumber);
-    }
+  .on("click", (_, d) => {
+    handleClick(d);
+    playDatum(d);
   });
 
 // Draw titles
@@ -129,20 +114,14 @@ const parent = svg
   .attr("r", RADIUS)
   .attr("fill", "none")
   .attr("pointer-events", "all")
-  .on("click", handleClick);
+  .on("click", (_, p) => handleClick(p));
 
-// Handle zoom on click
-function handleClick(_: Event, p: DatumNode) {
+function handleClick(p: DatumNode) {
   const popup = document.getElementById("diseasePopup");
   const sunburst = document.getElementById("sunburst"); // Reference to the sunburst container
 
-  // Hide popup initially to handle any previous state
-  if (popup) popup.style.display = "none";
-
-  if (p.depth === 2) {
-    handlePopup(p);
-    return;
-  }
+  if (popup) popup.style.display = "none"; // Hide popup initially to handle any previous state
+  if (p.depth === 2) return handlePopup(p);
 
   const t = svg.transition().duration(TRANSITION_TIME);
 
