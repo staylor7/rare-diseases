@@ -5,7 +5,6 @@ import { TRANSITION_TIME } from "./main";
 const CSV = await csv(csvUrl);
 
 let currentChakra = "";
-let currentDiseaseAudio = new Audio();
 
 const chakraContext = new AudioContext();
 let currentChakraGainNode = chakraContext.createGain();
@@ -57,20 +56,14 @@ function boundVolume(volume: number) {
 }
 
 /**
- * Plays a new disease sound, stopping the current disease sound if it exists
+ * Plays a new disease sound, overlapping the current disease sound if it exists
  */
 export async function playDiseaseSound(rowNumber: string) {
-  const path = (
-    await import(`../assets/promoter/dna${rowNumber.padStart(3, "0")}.mp3`)
-  ).default;
-
-  if (currentDiseaseAudio) {
-    currentDiseaseAudio.pause();
-    currentDiseaseAudio.currentTime = 0;
-  }
-
-  currentDiseaseAudio = new Audio(path);
-  currentDiseaseAudio.play();
+  new Audio(
+    (
+      await import(`../assets/promoter/dna${rowNumber.padStart(3, "0")}.mp3`)
+    ).default
+  ).play();
 }
 
 export function getRowNumberForDisease(diseaseName: string) {
