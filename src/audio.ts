@@ -1,62 +1,64 @@
 import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
+import { TRANSITION_TIME } from "./main";
 
 const CSV = await csv(csvUrl);
 
-let currentChakraAudio = new Audio();
+let currentChakra = "";
 let currentDiseaseAudio = new Audio();
 
+const chakraContext = new AudioContext();
+let currentChakraGainNode = chakraContext.createGain();
+
+/**
+ * Fades in a new chakra/category sound, fading out the current chakra sound if it exists
+ * If the current sound is the same, ignores and continues looping
+ */
 export async function playChakraSound(chakraName: string) {
+  if (chakraName === currentChakra) return;
+
   const path = (await import(`../assets/chakra/${chakraName}.mp3`)).default;
-  const newAudio = new Audio(path);
-  newAudio.loop = true;
+  const audio = new Audio(path);
+  const newGainNode = chakraContext.createGain();
+  const source = chakraContext.createMediaElementSource(audio);
 
-  // Define a fade function
-  function fadeAudio(
-    audio: HTMLAudioElement,
-    startVolume: number,
-    endVolume: number,
-    duration: number
-  ) {
-    const step = (endVolume - startVolume) / (duration / 100); // Calculate volume change per step
-    let currentVolume = startVolume;
-    audio.volume = currentVolume;
+  newGainNode.connect(chakraContext.destination);
+  source.connect(newGainNode);
 
-    const fade = setInterval(() => {
-      currentVolume += step;
-      if (
-        (step < 0 && currentVolume <= endVolume) ||
-        (step > 0 && currentVolume >= endVolume)
-      ) {
-        clearInterval(fade); // Stop the interval
-        audio.volume = endVolume; // Ensure final volume is set
+  audio.loop = true;
+  audio.play();
 
-        if (endVolume === 0) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      } else {
-        audio.volume = currentVolume;
-      }
-    }, 100);
-  }
+  fade(currentChakraGainNode, 1, 0);
+  fade(newGainNode, 0, 1);
 
-  // Fade out current audio, if any
-  if (currentChakraAudio) {
-    fadeAudio(currentChakraAudio, 1.0, 0, 2000); // Fade out over 2 seconds
-  }
-
-  // Prepare the new audio
-  newAudio.volume = 0; // Start at volume 0 for fade in
-  currentChakraAudio = newAudio; // Update reference to new audio
-  newAudio.play().catch((e) => console.error("Failed to play new audio:", e)); // Play new audio, handling potential play promise rejection
-
-  // Fade in new audio
-  setTimeout(() => {
-    fadeAudio(newAudio, 0, 1.0, 500); // Fade in over 2 seconds
-  }, 500); // Start fade in after ensuring the old audio has started to fade out
+  currentChakra = chakraName;
+  currentChakraGainNode = newGainNode;
 }
 
+function fade(
+  gainNode: GainNode,
+  startVolume: number,
+  endVolume: number,
+  duration: number = TRANSITION_TIME
+) {
+  gainNode.gain.setValueAtTime(
+    boundVolume(startVolume),
+    chakraContext.currentTime
+  );
+
+  gainNode.gain.linearRampToValueAtTime(
+    boundVolume(endVolume),
+    chakraContext.currentTime + duration / 1000
+  );
+}
+
+function boundVolume(volume: number) {
+  return Math.min(Math.max(volume, 0), 1);
+}
+
+/**
+ * Plays a new disease sound, stopping the current disease sound if it exists
+ */
 export async function playDiseaseSound(rowNumber: string) {
   const path = (
     await import(`../assets/promoter/dna${rowNumber.padStart(3, "0")}.mp3`)

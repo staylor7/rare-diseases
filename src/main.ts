@@ -26,10 +26,11 @@ import handlePopup from "./popup";
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
+export const TRANSITION_TIME = 750; // ms
+
 const WIDTH = 928; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 6; // px
-const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
 const color = scaleOrdinal(
