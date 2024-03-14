@@ -12,14 +12,22 @@ export async function playChakraSound(chakraName: string) {
   newAudio.loop = true;
 
   // Define a fade function
-  function fadeAudio(audio: HTMLAudioElement, startVolume: number, endVolume: number, duration: number) {
+  function fadeAudio(
+    audio: HTMLAudioElement,
+    startVolume: number,
+    endVolume: number,
+    duration: number
+  ) {
     const step = (endVolume - startVolume) / (duration / 100); // Calculate volume change per step
     let currentVolume = startVolume;
     audio.volume = currentVolume;
 
     const fade = setInterval(() => {
       currentVolume += step;
-      if ((step < 0 && currentVolume <= endVolume) || (step > 0 && currentVolume >= endVolume)) {
+      if (
+        (step < 0 && currentVolume <= endVolume) ||
+        (step > 0 && currentVolume >= endVolume)
+      ) {
         clearInterval(fade); // Stop the interval
         audio.volume = endVolume; // Ensure final volume is set
 
@@ -41,14 +49,13 @@ export async function playChakraSound(chakraName: string) {
   // Prepare the new audio
   newAudio.volume = 0; // Start at volume 0 for fade in
   currentChakraAudio = newAudio; // Update reference to new audio
-  newAudio.play().catch(e => console.error("Failed to play new audio:", e)); // Play new audio, handling potential play promise rejection
+  newAudio.play().catch((e) => console.error("Failed to play new audio:", e)); // Play new audio, handling potential play promise rejection
 
   // Fade in new audio
   setTimeout(() => {
     fadeAudio(newAudio, 0, 1.0, 500); // Fade in over 2 seconds
   }, 500); // Start fade in after ensuring the old audio has started to fade out
 }
-
 
 export async function playDiseaseSound(rowNumber: string) {
   const path = (
