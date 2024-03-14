@@ -2,13 +2,16 @@ a:link {
   color: red;
   text-decoration: none;
 }
+
 a:visited {
   color: purple;
   text-decoration: none;
 }
+
 a:hover {
   color: darkorange;
 }
+
 a:active {
   color: orange;
 }
@@ -41,8 +44,22 @@ padding: 10px 10px 10px 10px; */
 #catalog {
   position: relative;
   z-index: 1;
-  top: -130px; /* closer to top of screen, is this a hack? */
+  top: -130px;
+  /* closer to top of screen, is this a hack? */
   justify-content: center;
   align-content: center;
   text-align: center;
+}
+
+#diseaseDetails {
+  white-space: pre-wrap;
+  /* Ensures that the text wraps and whitespace/newlines are respected */
+  word-wrap: break-word;
+  /* Breaks words that are too long for one line */
+  max-width: 560px;
+  /* Adjust based on your popup width */
+}
+
+.link-darkblue {
+  color: darkblue;
 }

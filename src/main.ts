@@ -14,21 +14,23 @@ import {
   BaseType,
 } from "d3";
 import {
-  extractChakraName,
   getRowNumberForDisease,
   playChakraSound,
   playDiseaseSound,
 } from "./audio";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
+import "./style.css";
+import handlePopup from "./popup";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
+export const TRANSITION_TIME = 750; // ms
+
 const WIDTH = 928; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 6; // px
-const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
 const color = scaleOrdinal(
@@ -38,6 +40,11 @@ const color = scaleOrdinal(
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
   .sort((a, b) => (b.value || 0) - (a.value || 0));
+
+// Title arcs: "category (charka)"
+hierarchyNode.eachBefore((d) => {
+  if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`;
+});
 
 const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
   hierarchyNode
@@ -81,7 +88,7 @@ path
 
     if (d.depth === 1) {
       // Check if it's a chakra node
-      const chakraName = extractChakraName(d.data.name);
+      const chakraName = d.data.chakra;
       if (chakraName) playChakraSound(chakraName);
     } else if (d.depth === 2) {
       // Check if it's a disease node
@@ -126,6 +133,17 @@ const parent = svg
 
 // Handle zoom on click
 function handleClick(_: Event, p: DatumNode) {
+  const popup = document.getElementById("diseasePopup");
+  const sunburst = document.getElementById("sunburst"); // Reference to the sunburst container
+
+  // Hide popup initially to handle any previous state
+  if (popup) popup.style.display = "none";
+
+  if (p.depth === 2) {
+    handlePopup(p);
+    return;
+  }
+
   const t = svg.transition().duration(TRANSITION_TIME);
 
   parent.datum(p.parent || root);
@@ -177,6 +195,9 @@ function handleClick(_: Event, p: DatumNode) {
     .transition(t)
     .attr("fill-opacity", (d) => +shouldBeVisible(d.target))
     .attrTween("transform", (d) => () => labelTransform(d.current));
+
+  // Ensure the sunburst's opacity is reset if the popup is not displayed
+  if (sunburst) sunburst.style.opacity = "1";
 }
 
 function shouldBeVisible(d: Rectangle) {
