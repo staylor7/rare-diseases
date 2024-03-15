@@ -6,29 +6,39 @@ import csvUrl from "/seq.d3.csv?url";
 const CSV = await csv(csvUrl);
 
 let currentCategory = "";
+let chakraContext: AudioContext;
+let currentChakraGainNode: GainNode;
 
-const CHAKRA_CONTEXT = new AudioContext();
-let currentChakraGainNode = CHAKRA_CONTEXT.createGain();
-
+/**
+ * Plays a chakra or disease sound according to the {@link DatumNode}
+ */
 export default function playDatum(d: DatumNode) {
+  // Initialize on first call, i.e. after user interaction (see https://goo.gl/7K7WLu)
+  if (!chakraContext) chakraContext = new AudioContext();
+  if (!currentChakraGainNode)
+    currentChakraGainNode = chakraContext.createGain();
+
+  // Chakra/category
   if (d.depth === 1 && d.data.chakra) {
-    if (d.data.name === currentCategory) return; // Ignore replaying same category (continue looping)
+    if (d.data.name === currentCategory) return; // Ignore replaying the same category (continue looping)
     playChakra(d.data.chakra);
     currentCategory = d.data.name;
-  } else if (d.depth === 2) playDisease(d.data.name);
+  }
+  // Disease/promoter
+  else if (d.depth === 2) playDisease(d.data.name);
   else console.error(`Invalid datum to play: ${d}`);
 }
 
 /**
- * Fades in a new chakra/category sound, fading out the current chakra sound if it exists
+ * Fades in the sound of the given chakra, fading out the current chakra sound if it exists
  */
 async function playChakra(name: string) {
   const path = (await import(`../../assets/chakra/${name}.mp3`)).default;
   const audio = new Audio(path);
-  const newGainNode = CHAKRA_CONTEXT.createGain();
-  const source = CHAKRA_CONTEXT.createMediaElementSource(audio);
+  const newGainNode = chakraContext.createGain();
+  const source = chakraContext.createMediaElementSource(audio);
 
-  newGainNode.connect(CHAKRA_CONTEXT.destination);
+  newGainNode.connect(chakraContext.destination);
   source.connect(newGainNode);
 
   audio.loop = true;
@@ -40,8 +50,29 @@ async function playChakra(name: string) {
   currentChakraGainNode = newGainNode;
 }
 
+function fade(
+  gainNode: GainNode,
+  startVolume: number,
+  endVolume: number,
+  duration: number = TRANSITION_TIME
+) {
+  gainNode.gain.setValueAtTime(
+    boundVolume(startVolume),
+    chakraContext.currentTime
+  );
+
+  gainNode.gain.linearRampToValueAtTime(
+    boundVolume(endVolume),
+    chakraContext.currentTime + duration / 1000
+  );
+}
+
+function boundVolume(volume: number) {
+  return Math.min(Math.max(volume, 0), 1);
+}
+
 /**
- * Plays a new disease sound, overlapping the current disease sound if it exists
+ * Plays the sound for the given disease, overlapping any current audio
  */
 async function playDisease(name: string) {
   const num = findDiseaseNum(name);
@@ -53,27 +84,6 @@ async function playDisease(name: string) {
       await import(`../../assets/promoter/dna${num.padStart(3, "0")}.mp3`)
     ).default
   ).play();
-}
-
-function fade(
-  gainNode: GainNode,
-  startVolume: number,
-  endVolume: number,
-  duration: number = TRANSITION_TIME
-) {
-  gainNode.gain.setValueAtTime(
-    boundVolume(startVolume),
-    CHAKRA_CONTEXT.currentTime
-  );
-
-  gainNode.gain.linearRampToValueAtTime(
-    boundVolume(endVolume),
-    CHAKRA_CONTEXT.currentTime + duration / 1000
-  );
-}
-
-function boundVolume(volume: number) {
-  return Math.min(Math.max(volume, 0), 1);
 }
 
 function findDiseaseNum(name: string) {
