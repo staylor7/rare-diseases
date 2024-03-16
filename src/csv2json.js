@@ -24,34 +24,35 @@ function stratifyData(csvData) {
   };
 
   csvData.forEach((row) => {
-    // Create nodes for layer 1
-    const categoryNode = findOrCreateChild(
+    // Find or create node for the category with chakra at the same level but not in the name
+    const categoryNode = findOrCreateChildWithChakra(
       root.children,
       row.Category,
       row.Chakra
     );
 
-    // Create nodes for layer 2 (disease names) under each layer 1 node
+    // Create nodes for layer 2 (disease names) under each category node
     const diseaseNode = {
       name: row["Disease"],
       children: [
-        { name: `'Nphenotype': ${row["Nphenotype"]}`, value: 100 },
-        { name: `'Ngenes': ${row["Ngenes"]}`, value: 100 },
-        { name: `'Elite': ${row["Elite"]}`, value: 100 },
-        { name: `'Inheritance': ${row["Inheritance"]}`, value: 100 },
-        { name: `'Nvariants': ${row["Nvariants"]}`, value: 100 },
-        { name: `'Phenotype': ${row["Phenotype"]}`, value: 100 },
-        { name: `'Gene': ${row["Gene"]}`, value: 100 },
+        { name: `Nphenotype: ${row["Nphenotype"]}`, value: 100 },
+        { name: `Ngenes: ${row["Ngenes"]}`, value: 100 },
+        { name: `Elite: ${row["Elite"]}`, value: 100 },
+        { name: `Inheritance: ${row["Inheritance"]}`, value: 100 },
+        { name: `Nvariants: ${row["Nvariants"]}`, value: 100 },
+        { name: `Phenotype: ${row["Phenotype"]}`, value: 100 },
+        { name: `Gene: ${row["Gene"]}`, value: 100 },
         {
-          name: `'Promoter': ${row["Promoter"]}`,
+          name: `Promoter: ${row["Promoter"]}`,
           value: 100,
           label: "Promoter: hover for details",
         },
         {
-          name: `'Malacards': ${row["Malacards"]}`,
+          name: `Description: ${row["Description"]}`,
           value: 100,
-          label: "Malacards: hover for details",
+          label: "Description: hover for details",
         },
+        { name: `Link: ${row["Link"]}`, value: 100 },
       ],
     };
 
@@ -61,11 +62,12 @@ function stratifyData(csvData) {
   return root;
 }
 
-function findOrCreateChild(children, name, opName) {
-  const fullName = `${name} (${opName})`;
-  let child = children.find((c) => c.name === fullName);
+function findOrCreateChildWithChakra(children, name, chakra) {
+  // Search for a child node by category name only
+  let child = children.find((c) => c.name === name && c.chakra === chakra);
   if (!child) {
-    child = { name: fullName, children: [] };
+    // If not found, create a new node with chakra as a separate property
+    child = { name: name, chakra: chakra, children: [] };
     children.push(child);
   }
   return child;

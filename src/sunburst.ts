@@ -13,22 +13,20 @@ import {
   scaleOrdinal,
   BaseType,
 } from "d3";
-import {
-  extractChakraName,
-  getRowNumberForDisease,
-  playChakraSound,
-  playDiseaseSound,
-} from "./audio";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
+import handlePopup from "./popup";
+import playDatum from "./audio/datum";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
+export const TRANSITION_TIME = 750; // ms
+
 const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
-const TRANSITION_TIME = 750; // ms
+// const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
 const color = scaleOrdinal(
@@ -57,6 +55,7 @@ const arcGen = arc<Rectangle>()
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
+
 // Draw arcs
 const path = svg
   .append("g")
@@ -76,19 +75,9 @@ const path = svg
 path
   .filter((d) => !!d.children) // `!!` casts to bool
   .style("cursor", "pointer")
-  .on("click", (event, d) => {
-    handleClick(event, d);
-
-    if (d.depth === 1) {
-      // Check if it's a chakra node
-      const chakraName = extractChakraName(d.data.name);
-      if (chakraName) playChakraSound(chakraName);
-    } else if (d.depth === 2) {
-      // Check if it's a disease node
-      const diseaseName = d.data.name;
-      const rowNumber = getRowNumberForDisease(diseaseName);
-      if (rowNumber !== null) playDiseaseSound(rowNumber);
-    }
+  .on("click", (_, d) => {
+    handleClick(d);
+    playDatum(d);
   });
 
 // Draw titles
@@ -122,24 +111,30 @@ const parent = svg
   .attr("r", RADIUS)
   .attr("fill", "none")
   .attr("pointer-events", "all")
-  .on("click", handleClick);
+  .on("click", (_, p) => handleClick(p));
 
 // Handle zoom on click
-function handleClick(_: Event, p: DatumNode) {
+function handleClick(p: DatumNode) {
+  const popup = document.getElementById("diseasePopup");
+  const sunburst = document.getElementById("sunburst"); // Reference to the sunburst container
+
+  if (popup) popup.style.display = "none"; // Hide popup initially to handle any previous state
+  if (p.depth === 2) return handlePopup(p);
+
   const t = svg.transition().duration(TRANSITION_TIME);
 
   parent.datum(p.parent || root);
 
   root.each(
     (d) =>
-      (d.target = {
-        x0:
-          Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        x1:
-          Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        y0: Math.max(0, d.y0 - p.depth),
-        y1: Math.max(0, d.y1 - p.depth),
-      }) // Should set all `DatumNode.target`
+    (d.target = {
+      x0:
+        Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      x1:
+        Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      y0: Math.max(0, d.y0 - p.depth),
+      y1: Math.max(0, d.y1 - p.depth),
+    }) // Should set all `DatumNode.target`
   );
 
   // Transition the data on all arcs, even the ones that aren’t visible,
@@ -177,6 +172,9 @@ function handleClick(_: Event, p: DatumNode) {
     .transition(t)
     .attr("fill-opacity", (d) => +shouldBeVisible(d.target))
     .attrTween("transform", (d) => () => labelTransform(d.current));
+
+  // Ensure the sunburst's opacity is reset if the popup is not displayed
+  if (sunburst) sunburst.style.opacity = "1";
 }
 
 function shouldBeVisible(d: Rectangle) {
@@ -194,3 +192,4 @@ function labelTransform(d: Rectangle) {
 
   return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 }
+
