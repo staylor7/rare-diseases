@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "staging": "npm run build && zip -r rare-test.zip rare-test",
     "preview": "vite preview",
     "format": "npx prettier --write .",
     "lint": "npx eslint --fix .",
