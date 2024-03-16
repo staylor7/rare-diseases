@@ -126,9 +126,40 @@ const label = svg
   .data(root.descendants().slice(1))
   .join("text")
   .attr("dy", "0.35em")
+  .style("font-size", "11px") // Adjust the font size as needed
   .attr("fill-opacity", (d) => +shouldBeVisible(d.current))
   .attr("transform", (d) => labelTransform(d.current))
-  .text((d) => d.data.label || d.data.name);
+  .each(function (d) {
+    const text = d.data.label || d.data.name;
+    const arcLength = (d.y1 - d.y0) * RADIUS; // Estimate arc length available for the text
+    const charactersPerLine = Math.floor(arcLength / 6); // Estimate max characters per line; adjust '6' based on your font size and styling
+    if (text.length > charactersPerLine) {
+      // If the text is too long, split it into parts
+      const parts = splitText(text, charactersPerLine);
+      parts.forEach((part, i) => {
+        select(this)
+          .append("tspan")
+          .attr("x", 0) // Centered horizontally
+          .attr("y", `${i * 1.2}em`) // Position each line; adjust '1.2em' based on your needs
+          .attr("dy", `${i === 0 ? 0 : 0.2}em`) // Adjust vertical spacing for lines after the first
+          .text(part);
+      });
+    } else {
+      // If the text fits in one line, just set it as the content of the text element
+      select(this).text(text);
+    }
+  });
+
+function splitText(text: string, maxLength: number): string[] {
+  const parts: string[] = [];
+  let start = 0;
+  while (start < text.length) {
+    parts.push(text.substring(start, Math.min(start + maxLength, text.length)));
+    start += maxLength;
+  }
+  return parts;
+}
+
 
 // Draw circle
 const parent = svg
