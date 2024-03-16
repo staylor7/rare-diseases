@@ -4,13 +4,10 @@
 
 import {
   interpolate,
-  interpolateRainbow,
   hierarchy,
   arc,
   select,
   partition,
-  quantize,
-  scaleOrdinal,
   BaseType,
 } from "d3";
 import { Datum, DatumNode, Rectangle } from "./types";
@@ -29,13 +26,34 @@ const RADIUS = WIDTH / 5; // px
 // const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
-const color = scaleOrdinal(
-  quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
-);
+const chakraColorMapping = {
+  ritu: "#bebada",
+  indu: "#fcaea4",
+  vasu: "#81b2d2",
+  rudra: "#fcbc73",
+  veda: "#b3dd69",
+  aditya: "#fdd8eb",
+  dishi: "#d9d9d9",
+  bana: "#bc80bd",
+  bhrama: "#d5eecf",
+  netra: "#ffed6f",
+  agni: "#93d6ca",
+  rishi: "#ffd9b3",
+};
+
+
+// const color = scaleOrdinal(
+//   quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
+// );
 
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
   .sort((a, b) => (b.value || 0) - (a.value || 0));
+
+// Title arcs: "category (charka)"
+hierarchyNode.eachBefore((d) => {
+  if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`;
+});
 
 const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
   hierarchyNode
@@ -56,21 +74,29 @@ const arcGen = arc<Rectangle>()
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
 
-// Draw arcs
+//draw arcs
+type ChakraName = keyof typeof chakraColorMapping;
+
 const path = svg
   .append("g")
   .selectAll("path")
   .data(root.descendants().slice(1))
   .join("path")
   .attr("fill", (d) => {
-    while (d.depth > 1 && d.parent) d = d.parent;
-    return color(d.data.name);
+    let ancestor = d;
+    while (ancestor.depth > 1 && ancestor.parent) ancestor = ancestor.parent;
+    const chakra = ancestor.data.chakra;
+    // Assert that chakra is a key of chakraColorMapping
+    const color = chakra ? chakraColorMapping[chakra as ChakraName] : undefined;
+    return color || "#cccccc"; // Fallback color
   })
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
   )
   .attr("pointer-events", (d) => (shouldBeVisible(d.current) ? "auto" : "none"))
   .attr("d", (d) => arcGen(d.current));
+
+
 
 path
   .filter((d) => !!d.children) // `!!` casts to bool
