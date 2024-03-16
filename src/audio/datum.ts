@@ -31,8 +31,11 @@ export default function playDatum(d: DatumNode) {
 
 /**
  * Fades in the sound of the given chakra, fading out the current chakra sound if it exists
+ * Exception: for the `vasu` chakra, does nothing (current chakra sounds continues if it exists)
  */
 async function playChakra(name: string) {
+  if (name == "vasu") return;
+
   const path = (await import(`../../assets/chakra/${name}.mp3`)).default;
   const audio = new Audio(path);
   const newGainNode = chakraContext.createGain();
