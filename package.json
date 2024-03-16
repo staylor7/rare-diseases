@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "staging": "npm run build && zip -r rare-test.zip rare-test",
-    "preview": "vite preview",
+    "local": "npm run all && npm run build",
+    "cpanel": "npm run all && npm run build --base=https://stephenandrewtaylor.net/rare-test && mv dist rare-test && zip -r rare-test.zip rare-test && mv rare-test dist",
+    "cloudflare": "npm run all && npm run build --base=https://rare-test.pages.dev/ && npx wrangler pages deploy dist",
+    "all": "npm run format && npm run lint",
     "format": "npx prettier --write .",
     "lint": "npx eslint --fix .",
-    "all": "npm run format && npm run lint && npm run build"
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/d3": "^7.4.2",
@@ -24,7 +26,8 @@
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "wrangler": "^3.34.2"
   },
   "dependencies": {
     "d3": "^7.9.0"
