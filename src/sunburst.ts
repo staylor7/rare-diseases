@@ -18,7 +18,7 @@ const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
 const DATA: Datum = json;
 
-const chakraColorMapping = {
+const CHAKRA_COLORS = {
   ritu: "#bebada",
   indu: "#fcaea4",
   vasu: "#81b2d2",
@@ -60,8 +60,6 @@ const arcGen = arc<Rectangle>()
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
-type ChakraName = keyof typeof chakraColorMapping;
-
 // Draw arcs
 const path = svg
   .append("g")
@@ -72,9 +70,10 @@ const path = svg
     let ancestor = d;
     while (ancestor.depth > 1 && ancestor.parent) ancestor = ancestor.parent;
     const chakra = ancestor.data.chakra;
-    // Assert that chakra is a key of chakraColorMapping
-    const color = chakra ? chakraColorMapping[chakra as ChakraName] : undefined;
-    return color || "#cccccc"; // Fallback color
+
+    return chakra && chakra in CHAKRA_COLORS
+      ? CHAKRA_COLORS[chakra as keyof typeof CHAKRA_COLORS]
+      : "#cccccc";
   })
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -117,10 +116,10 @@ const label = svg
     const text = d.data.label || d.data.name;
     const arcLength = (d.y1 - d.y0) * RADIUS; // Estimate arc length available for the text
     const charactersPerLine = Math.floor(arcLength / 6); // Estimate max characters per line; adjust '6' based on your font size and styling
-    if (text.length > charactersPerLine) {
+
+    if (text.length > charactersPerLine)
       // If the text is too long, split it into parts
-      const parts = splitText(text, charactersPerLine);
-      parts.forEach((part, i) => {
+      splitText(text, charactersPerLine).forEach((part, i) => {
         select(this)
           .append("tspan")
           .attr("x", 0) // Centered horizontally
@@ -128,10 +127,8 @@ const label = svg
           .attr("dy", `${i === 0 ? 0 : 0.2}em`) // Adjust vertical spacing for lines after the first
           .text(part);
       });
-    } else {
-      // If the text fits in one line, just set it as the content of the text element
-      select(this).text(text);
-    }
+    // If the text fits in one line, just set it as the content of the text element
+    else select(this).text(text);
   });
 
 function splitText(text: string, maxLength: number): string[] {
