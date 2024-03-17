@@ -60,9 +60,9 @@ const arcGen = arc<Rectangle>()
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
-//draw arcs
 type ChakraName = keyof typeof chakraColorMapping;
 
+// Draw arcs
 const path = svg
   .append("g")
   .selectAll("path")

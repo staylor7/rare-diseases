@@ -40,9 +40,7 @@ export default function handlePopup(p: DatumNode) {
 
   detailsHtml += linksHtml;
 
-  if (!detailsHtml.trim()) {
-    detailsHtml = "<div>No details available</div>";
-  }
+  if (!detailsHtml.trim()) detailsHtml = "<div>No details available</div>";
 
   popup.innerHTML = `
   <button id="popupCloseButton" style="position: absolute; top: 15px; right: 15px; cursor: pointer;">&times;</button>
@@ -73,7 +71,5 @@ export default function handlePopup(p: DatumNode) {
       sunburst.style.opacity = "1";
       event.stopPropagation(); // Prevent the click event from bubbling up
     });
-  } else {
-    console.error("Close button not found.");
-  }
+  } else console.error("Close button not found.");
 }
