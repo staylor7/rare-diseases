@@ -1,3 +1,7 @@
+html * {
+  font-family: system-ui;
+}
+
 a:link {
   color: red;
   text-decoration: none;
@@ -17,23 +21,20 @@ a:active {
 }
 
 #header {
-  /* width: 1000px;
-margin: 10px auto 10px auto;
-padding: 10px 10px 10px 10px; */
-  font-family: system-ui;
   font-size: 1.5em;
   font-weight: bold;
+  text-align: center;
   color: purple;
   background-color: white;
-  /* justify-content: center;
-  align-content: center;
-  text-align: center; */
+}
+
+#sunburst {
+  margin: auto;
+  min-width: 928px;
+  min-height: 928px;
 }
 
 #diseaseText {
-  /* width: 1000px;
-margin: 10px auto 10px auto;
-padding: 10px 10px 10px 10px; */
   z-index: 0;
   font-family: system-ui;
   font-size: 1em;
