@@ -2,28 +2,20 @@
  * Based off of https://observablehq.com/@d3/zoomable-sunburst
  */
 
-import {
-  interpolate,
-  hierarchy,
-  arc,
-  select,
-  partition,
-  BaseType,
-} from "d3";
+import { interpolate, hierarchy, arc, select, partition, BaseType } from "d3";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
 import handlePopup from "./popup";
 import playDatum from "./audio/datum";
 
+export const TRANSITION_TIME = 750; // ms
+
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
-
-export const TRANSITION_TIME = 750; // ms
 
 const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
-// const TRANSITION_TIME = 750; // ms
 const DATA: Datum = json;
 
 const chakraColorMapping = {
@@ -40,8 +32,6 @@ const chakraColorMapping = {
   agni: "#93d6ca",
   rishi: "#ffd9b3",
 };
-
-
 
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
@@ -70,7 +60,6 @@ const arcGen = arc<Rectangle>()
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
-
 //draw arcs
 type ChakraName = keyof typeof chakraColorMapping;
 
@@ -92,8 +81,6 @@ const path = svg
   )
   .attr("pointer-events", (d) => (shouldBeVisible(d.current) ? "auto" : "none"))
   .attr("d", (d) => arcGen(d.current));
-
-
 
 path
   .filter((d) => !!d.children) // `!!` casts to bool
@@ -157,7 +144,6 @@ function splitText(text: string, maxLength: number): string[] {
   return parts;
 }
 
-
 // Draw circle
 const parent = svg
   .append("circle")
@@ -167,7 +153,6 @@ const parent = svg
   .attr("pointer-events", "all")
   .on("click", (_, p) => handleClick(p));
 
-// Handle zoom on click
 function handleClick(p: DatumNode) {
   const popup = document.getElementById("diseasePopup");
   const sunburst = document.getElementById("sunburst"); // Reference to the sunburst container
@@ -181,14 +166,14 @@ function handleClick(p: DatumNode) {
 
   root.each(
     (d) =>
-    (d.target = {
-      x0:
-        Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-      x1:
-        Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-      y0: Math.max(0, d.y0 - p.depth),
-      y1: Math.max(0, d.y1 - p.depth),
-    }) // Should set all `DatumNode.target`
+      (d.target = {
+        x0:
+          Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        x1:
+          Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        y0: Math.max(0, d.y0 - p.depth),
+        y1: Math.max(0, d.y1 - p.depth),
+      }) // Should set all `DatumNode.target`
   );
 
   // Transition the data on all arcs, even the ones that aren’t visible,
@@ -246,4 +231,3 @@ function labelTransform(d: Rectangle) {
 
   return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 }
-

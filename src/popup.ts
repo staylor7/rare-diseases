@@ -9,8 +9,8 @@ export default function handlePopup(p: DatumNode) {
     return;
   }
 
-  let linksHtml = '';
-  let detailsHtml = '';
+  let linksHtml = "";
+  let detailsHtml = "";
   p.children?.forEach((child) => {
     if (child.data.name.startsWith("Link:")) {
       const urlMatch = child.data.name.match(/Link:\s*(.*)/);
@@ -22,13 +22,18 @@ export default function handlePopup(p: DatumNode) {
       let description = parts[1] ? parts[1].trim() : "";
       // Capitalize the first letter of the description
       if (description) {
-        description = description.charAt(0).toUpperCase() + description.slice(1);
+        description =
+          description.charAt(0).toUpperCase() + description.slice(1);
       }
-      if (term.toLowerCase() === 'description') {
+      if (term.toLowerCase() === "description") {
         // Apply margin for the description
-        detailsHtml = `<div style="margin-bottom: 10px;">${description}</div>` + detailsHtml;
+        detailsHtml =
+          `<div style="margin-bottom: 10px;">${description}</div>` +
+          detailsHtml;
       } else {
-        detailsHtml += description ? `<div><strong>${term}:</strong> ${description}</div>` : `<div><strong>${term}</strong></div>`;
+        detailsHtml += description
+          ? `<div><strong>${term}:</strong> ${description}</div>`
+          : `<div><strong>${term}</strong></div>`;
       }
     }
   });
