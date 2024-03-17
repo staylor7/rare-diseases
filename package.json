@@ -30,6 +30,9 @@
     "wrangler": "^3.34.2"
   },
   "dependencies": {
-    "d3": "^7.9.0"
+    "@fontsource-variable/roboto-flex": "^5.0.14",
+    "@fontsource/open-sans": "^5.0.27",
+    "d3": "^7.9.0",
+    "normalize.css": "^8.0.1"
   }
 }

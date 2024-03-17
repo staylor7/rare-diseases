@@ -1,55 +1,82 @@
-html * {
-  font-family: system-ui;
+/* Global CSS recommendations from https://blog.logrocket.com/what-should-modern-css-boilerplate-look-like/ */
+
+*,
+*::before,
+*::after {
+  font-family: "Roboto Flex Variable", sans-serif;
+  box-sizing: border-box;
 }
 
-a:link {
-  color: red;
-  text-decoration: none;
+menu:not(article menu),
+ol:not(article ol),
+ul:not(article ul) {
+  list-style: none;
 }
 
-a:visited {
+article ol,
+article ul {
+  list-style-position: inside;
+}
+
+menu,
+ol,
+ul {
+  padding-left: 0;
+}
+
+a {
+  /* Places underlines below the descenders */
+  text-underline-position: under;
+
+  /* Sets the thickness as a percentage of the font size */
+  text-decoration-thickness: 8;
+}
+
+html {
+  font-size: 62.5%; /* (62.5/100) * 16px = 10px */
+  -webkit-text-size-adjust: none; /* for iOS Safari */
+  text-size-adjust: none; /* for other mobile browsers */
+
+  height: 100%;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+label,
+button,
+select,
+summary,
+[type="radio"],
+[type="submit"],
+[type="checkbox"] {
+  cursor: pointer;
+}
+
+#page {
+  margin: 8rem;
+}
+
+.title {
   color: purple;
-  text-decoration: none;
 }
 
-a:hover {
-  color: darkorange;
-}
-
-a:active {
-  color: orange;
-}
-
-#header {
-  font-size: 1.5em;
-  font-weight: bold;
-  text-align: center;
-  color: purple;
-  background-color: white;
+.description {
+  font-size: medium;
 }
 
 #sunburst {
   margin: auto;
   min-width: 928px;
   min-height: 928px;
-}
-
-#diseaseText {
-  z-index: 0;
-  font-family: system-ui;
-  font-size: 1em;
-  font-weight: normal;
-  color: purple;
-}
-
-#catalog {
-  position: relative;
-  z-index: 1;
-  top: -130px;
-  /* closer to top of screen, is this a hack? */
-  justify-content: center;
-  align-content: center;
-  text-align: center;
 }
 
 #diseaseDetails {
@@ -61,6 +88,16 @@ a:active {
   /* Adjust based on your popup width */
 }
 
-.link-darkblue {
-  color: darkblue;
+#footer {
+  margin: 4rem;
+}
+
+#copyright {
+  font-size: small;
+}
+
+.copyrightIcon {
+  height: 2rem;
+  margin-left: 0.2rem;
+  vertical-align: text-bottom;
 }

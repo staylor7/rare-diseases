@@ -1,7 +1,7 @@
 import { DatumNode } from "./types";
 
 export default function handlePopup(p: DatumNode) {
-  const popup = document.getElementById("diseasePopup");
+  const popup = document.getElementById("popup");
   const sunburst = document.getElementById("sunburst");
 
   if (!popup || !sunburst) {
@@ -44,7 +44,7 @@ export default function handlePopup(p: DatumNode) {
   if (!detailsHtml.trim()) detailsHtml = "<div>No details available</div>";
 
   popup.innerHTML = `
-  <button id="popupCloseButton" style="position: absolute; top: 15px; right: 15px; cursor: pointer;">&times;</button>
+  <button id="closePopup" style="position: absolute; top: 15px; right: 15px; cursor: pointer;">&times;</button>
     <div style="margin: 20px;">
         <div style="font-size: 18px; margin-bottom: 10px;"><strong>${p.data.name}</strong></div>
         ${detailsHtml}
@@ -65,7 +65,7 @@ export default function handlePopup(p: DatumNode) {
 
   sunburst.style.opacity = "0.5";
 
-  const closeButton = popup.querySelector("#popupCloseButton");
+  const closeButton = popup.querySelector("#closePopup");
   if (closeButton)
     closeButton.addEventListener("click", function (event) {
       popup.style.display = "none";
