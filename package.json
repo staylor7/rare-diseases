@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "local": "npm run all && npm run build",
-    "cpanel": "npm run all && npm run build --base=https://stephenandrewtaylor.net/rare-test && mv dist rare-test && zip -r rare-test.zip rare-test && mv rare-test dist",
-    "cloudflare": "npm run all && npm run build --base=https://rare-test.pages.dev/ && npx wrangler pages deploy dist",
+    "cpanel": "npm run all && tsc && vite build --base https://stephenandrewtaylor.net/rare-test/ --outDir rare-test && zip -r rare-test.zip rare-test && mv rare-test dist",
+    "cloudflare": "npm run all && npm run build && npx wrangler pages deploy dist",
     "all": "npm run format && npm run lint",
     "format": "npx prettier --write .",
     "lint": "npx eslint --fix .",
