@@ -1571,59 +1571,6 @@
       ]
     },
     {
-      "name": "reproductive",
-      "chakra": "vasu",
-      "children": [
-        {
-          "name": "no phenotypes",
-          "children": [
-            {
-              "name": "Nphenotype: ",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: ",
-              "value": 100
-            },
-            {
-              "name": "Elite: ",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: ",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: ",
-              "value": 100
-            },
-            {
-              "name": "Gene: PAX8",
-              "value": 100
-            },
-            {
-              "name": "Promoter: TCCCGCACCCCCCTGCACCCAGCCAGCCAATCCGCGGCCTACGAGCCTCGCCAGACCCATCTCCCAGGGCCTCAGCGGGATAAAACCGGTCGGTGATGCCGGGTGGAT",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: ",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: ",
-              "value": 100
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "lyosomal",
       "chakra": "rudra",
       "children": [
