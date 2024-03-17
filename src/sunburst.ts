@@ -42,9 +42,6 @@ const chakraColorMapping = {
 };
 
 
-// const color = scaleOrdinal(
-//   quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
-// );
 
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)

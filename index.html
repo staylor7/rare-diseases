@@ -29,17 +29,20 @@
 
   <!-- Popup for displaying disease details -->
   <div id="diseasePopup" style="
-        display: none;
-        position: absolute;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      ">
+  display: none;
+  position: absolute;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 28%; /* Example: makes the width half of the browser window width */
+  max-width: 450px; /* Optional: prevents the popup from becoming too wide */
+">
     <button id="closePopupButton" style="float: right">&times;</button>
     <div id="diseaseDetails"></div>
   </div>
+
 
   <script type="module" src="/src/sunburst.ts"></script>
   <script type="module" src="/src/audio/viola.ts"></script>
