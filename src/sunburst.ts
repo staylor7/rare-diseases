@@ -2,17 +2,7 @@
  * Based off of https://observablehq.com/@d3/zoomable-sunburst
  */
 
-import {
-  interpolate,
-  interpolateRainbow,
-  hierarchy,
-  arc,
-  select,
-  partition,
-  quantize,
-  scaleOrdinal,
-  BaseType,
-} from "d3";
+import { interpolate, hierarchy, arc, select, partition, BaseType } from "d3";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
 import handlePopup from "./popup";
@@ -23,14 +13,25 @@ export const TRANSITION_TIME = 750; // ms
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
-const WIDTH = 928; // px
+const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
-const RADIUS = WIDTH / 6; // px
+const RADIUS = WIDTH / 5; // px
 const DATA: Datum = json;
 
-const color = scaleOrdinal(
-  quantize(interpolateRainbow, DATA.children?.length ?? 0 + 1)
-);
+const CHAKRA_COLORS = {
+  ritu: "#bebada",
+  indu: "#fcaea4",
+  vasu: "#81b2d2",
+  rudra: "#fcbc73",
+  veda: "#b3dd69",
+  aditya: "#fdd8eb",
+  dishi: "#d9d9d9",
+  bana: "#bc80bd",
+  bhrama: "#d5eecf",
+  netra: "#ffed6f",
+  agni: "#93d6ca",
+  rishi: "#ffd9b3",
+};
 
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
@@ -49,7 +50,7 @@ root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
 const svg = select<HTMLElement, Rectangle>(CONTAINER)
   .append<BaseType>("svg")
   .attr("viewBox", [-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT])
-  .style("font", "10px sans-serif");
+  .attr("preserveAspectRatio", "xMinYMin meet");
 
 const arcGen = arc<Rectangle>()
   .startAngle((d) => d.x0)
@@ -66,8 +67,13 @@ const path = svg
   .data(root.descendants().slice(1))
   .join("path")
   .attr("fill", (d) => {
-    while (d.depth > 1 && d.parent) d = d.parent;
-    return color(d.data.name);
+    let ancestor = d;
+    while (ancestor.depth > 1 && ancestor.parent) ancestor = ancestor.parent;
+    const chakra = ancestor.data.chakra;
+
+    return chakra && chakra in CHAKRA_COLORS
+      ? CHAKRA_COLORS[chakra as keyof typeof CHAKRA_COLORS]
+      : "#cccccc";
   })
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -103,9 +109,37 @@ const label = svg
   .data(root.descendants().slice(1))
   .join("text")
   .attr("dy", "0.35em")
+  .style("font-size", "11px") // Adjust the font size as needed
   .attr("fill-opacity", (d) => +shouldBeVisible(d.current))
   .attr("transform", (d) => labelTransform(d.current))
-  .text((d) => d.data.label || d.data.name);
+  .each(function (d) {
+    const text = d.data.label || d.data.name;
+    const arcLength = (d.y1 - d.y0) * RADIUS; // Estimate arc length available for the text
+    const charactersPerLine = Math.floor(arcLength / 6); // Estimate max characters per line; adjust '6' based on your font size and styling
+
+    if (text.length > charactersPerLine)
+      // If the text is too long, split it into parts
+      splitText(text, charactersPerLine).forEach((part, i) => {
+        select(this)
+          .append("tspan")
+          .attr("x", 0) // Centered horizontally
+          .attr("y", `${i * 1.2}em`) // Position each line; adjust '1.2em' based on your needs
+          .attr("dy", `${i === 0 ? 0 : 0.2}em`) // Adjust vertical spacing for lines after the first
+          .text(part);
+      });
+    // If the text fits in one line, just set it as the content of the text element
+    else select(this).text(text);
+  });
+
+function splitText(text: string, maxLength: number): string[] {
+  const parts: string[] = [];
+  let start = 0;
+  while (start < text.length) {
+    parts.push(text.substring(start, Math.min(start + maxLength, text.length)));
+    start += maxLength;
+  }
+  return parts;
+}
 
 // Draw circle
 const parent = svg
