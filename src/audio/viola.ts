@@ -10,6 +10,7 @@ const AUDIO = <HTMLAudioElement>document.getElementById("viola");
 if (!AUDIO) throw new Error("No container found with the ID 'viola'");
 
 AUDIO.src = viola;
+// AUDIO.addEventListener("play", toggle);
 AUDIO.ontimeupdate = () => handleTimeUpdate();
 
 let currentChakra = "";
