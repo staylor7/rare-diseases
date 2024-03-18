@@ -59,25 +59,11 @@
         played depends on the number of genes associated with the disease.
       </p>
       <audio id="viola" controls></audio>
-      <div id="sunburst"></div>
-
-      <!-- Popup for displaying disease details -->
-      <div
-        id="popup"
-        style="
-          display: none;
-          position: absolute;
-          z-index: 10;
-          background: rgba(255, 255, 255, 0.8);
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          width: 28%;
-          max-width: 450px;
-        "
-      >
-        <button id="closePopup" style="float: right">&times;</button>
-        <div id="diseaseDetails"></div>
+      <div id="sunburst">
+        <div id="popup">
+          <button id="closePopup" style="float: right">&times;</button>
+          <div id="diseaseDetails"></div>
+        </div>
       </div>
 
       <script type="module" src="/src/main.ts"></script>

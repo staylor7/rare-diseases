@@ -87,6 +87,22 @@ summary,
 #sunburst {
   min-width: 928px;
   min-height: 928px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#popup {
+  display: none; /* Toggles between `none` and `block` in `./popup.ts` */
+  position: absolute;
+  width: 40%;
+  /* max-width: 80%; */
+  background-color: white;
+  box-shadow: "0 4px 8px rgba(0,0,0,0.1)";
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  word-wrap: break-word;
 }
 
 #diseaseDetails {

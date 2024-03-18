@@ -156,9 +156,10 @@ function splitText(text: string, maxLength: number): string[] {
   return parts;
 }
 
-// Draw circle
+// Draw center circle
 const parent = svg
   .append("circle")
+  .attr("id", "circle")
   .datum(root)
   .attr("r", RADIUS)
   .attr("fill", "none")
