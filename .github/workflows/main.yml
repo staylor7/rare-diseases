@@ -1,0 +1,29 @@
+on: push
+name: 🚀 Deploy website on push
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm install -g vite
+          npm run all && tsc && vite build --base https://stephenandrewtaylor.net/rare-test/ --outDir rare-test
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.stephenandrewtaylor.net
+          username: quinnouyang@stephenandrewtaylor.net
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./rare-test/
+          dry-run: true
