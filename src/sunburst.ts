@@ -117,11 +117,12 @@ const label = svg
     const arcLength = (d.y1 - d.y0) * RADIUS; // Estimate arc length available for the text
     const charactersPerLine = Math.floor(arcLength / 7); // Estimate max characters per line; adjust '6' based on your font size and styling
 
-    if (d.depth >= 2) { // Replace someValue with the actual depth value that differentiates categories from diseases
+    if (d.depth >= 2) {
+      // Replace someValue with the actual depth value that differentiates categories from diseases
       // For disease-level labels, truncate and add '...' if the text is too long
       if (text.length > charactersPerLine) {
         const allowedLength = charactersPerLine - 3; // Adjust for the length of '...'
-        select(this).text(text.substr(0, allowedLength) + '...');
+        select(this).text(text.substr(0, allowedLength) + "...");
       } else {
         select(this).text(text);
       }
@@ -175,14 +176,14 @@ function handleClick(p: DatumNode) {
 
   root.each(
     (d) =>
-    (d.target = {
-      x0:
-        Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-      x1:
-        Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-      y0: Math.max(0, d.y0 - p.depth),
-      y1: Math.max(0, d.y1 - p.depth),
-    }) // Should set all `DatumNode.target`
+      (d.target = {
+        x0:
+          Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        x1:
+          Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        y0: Math.max(0, d.y0 - p.depth),
+        y1: Math.max(0, d.y1 - p.depth),
+      }) // Should set all `DatumNode.target`
   );
 
   // Transition the data on all arcs, even the ones that aren’t visible,

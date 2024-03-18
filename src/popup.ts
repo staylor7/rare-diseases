@@ -44,7 +44,7 @@ export default function handlePopup(p: DatumNode) {
     function closePopup() {
       if (popup) {
         popup.style.display = "none";
-        document.removeEventListener('mousedown', handleOutsideClick);
+        document.removeEventListener("mousedown", handleOutsideClick);
       }
       if (sunburst) {
         sunburst.style.opacity = "1";
@@ -53,14 +53,16 @@ export default function handlePopup(p: DatumNode) {
 
     // Add an event listener to close the popup when clicking outside
     function handleOutsideClick(event: MouseEvent) {
-      if (popup && !popup.contains(event.target as Node) && (!sunburst || event.target !== sunburst)) {
+      if (
+        popup &&
+        !popup.contains(event.target as Node) &&
+        (!sunburst || event.target !== sunburst)
+      ) {
         closePopup();
       }
     }
 
-    document.addEventListener('mousedown', handleOutsideClick);
-
-
+    document.addEventListener("mousedown", handleOutsideClick);
   });
 
   popup.style.position = "absolute";
@@ -88,7 +90,8 @@ export default function handlePopup(p: DatumNode) {
 
     // Format lines for non-link items, e.g., "Elite: Yes" or adding descriptions
     if (term.toLowerCase() === "description")
-      detailsHtml = `<div style="margin-bottom: 10px;">${description}</div>` + detailsHtml;
+      detailsHtml =
+        `<div style="margin-bottom: 10px;">${description}</div>` + detailsHtml;
     else
       detailsHtml += description
         ? `<div><strong>${term}:</strong> ${description}</div>`
@@ -99,7 +102,6 @@ export default function handlePopup(p: DatumNode) {
   detailsHtml += linksHtml;
 
   // The rest of your function remains unchanged, eventually setting popup.innerHTML with the modified detailsHtml
-
 
   if (!detailsHtml.trim()) detailsHtml = "<div>No details available</div>";
 
