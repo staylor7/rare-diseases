@@ -7,31 +7,12 @@ import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
 import handlePopup from "./popup";
 import playDatum from "./audio/datum";
-
-import viola from "/viola.mp3";
-import { csv } from "d3-fetch"; // Assuming you can use d3-fetch or an equivalent method
-
-const AUDIO = <HTMLAudioElement>document.getElementById("viola");
-if (!AUDIO) throw new Error("No container found with the ID 'viola'");
-
-AUDIO.src = viola;
-
-let intervalId: number;
-let currentTime = 0;
-
-// Define a structure to store the parsed CSV data
-interface CsvRow {
-  index: string;
-  Disease: string;
-  Timings: number;
-  Category: string;
-  Chakra: string; // Make sure this is included in your interface
-}
-
-export const TRANSITION_TIME = 750; // ms
+import "./audio/viola";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
+
+export const TRANSITION_TIME = 750; // ms
 
 const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
@@ -95,7 +76,7 @@ const path = svg
       ? CHAKRA_COLORS[chakra as keyof typeof CHAKRA_COLORS]
       : "#cccccc";
   })
-  .attr("data-category-chakra", (d) => `${d.data.name}(${d.data.chakra})`)
+  .attr("data-category-chakra", (d) => `${d.data.name}`)
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
   )
@@ -250,106 +231,13 @@ function labelTransform(d: Rectangle) {
   return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 }
 
-// ----------- simulation ---------------------
-
-let csvData: CsvRow[] = [];
-
-// Load and parse the CSV file, ensuring 'Timings' is correctly typed as a number
-async function loadCsvData() {
-  const rawData = await csv("./seq.d3.csv"); // Adjust the path to your CSV file
-
-  // Immediately convert 'Timings' from string to number during processing
-  csvData = rawData.map((row) => {
-    return {
-      ...row,
-      Timings: parseFloat(row["Timings"] as string), // Explicitly cast and convert
-    };
-  }) as CsvRow[]; // The cast here asserts that the transformation conforms to CsvRow
-}
-
-// Call loadCsvData to load the data
-loadCsvData().catch((error) => console.error("Failed to load CSV data", error));
-
-AUDIO.addEventListener("play", handlePlay);
-AUDIO.addEventListener("pause", () => {
-  console.log(`Pausing playback at ${AUDIO.currentTime}s`);
-  clearInterval(intervalId);
-});
-
-function handlePlay() {
-  console.log(`Starting playback: ${AUDIO.duration - currentTime}s remaining`);
-
-  intervalId = window.setInterval(() => {
-    currentTime = AUDIO.currentTime;
-    console.log(`Current time: ${currentTime}s`);
-    checkAndExecuteActions(currentTime);
-
-    // Check for a matching timestamp and log the 'Category' and 'Disease'
-    // Within handlePlay, modify the logging for a matching timestamp
-    const matchingRow = csvData.find(
-      (row) => Math.abs(row.Timings - currentTime) < 0.5
-    );
-    if (matchingRow) {
-      console.log(
-        `Match found at ${currentTime}s: ${matchingRow.Category} (${matchingRow.Chakra}), ${matchingRow.Disease}`
-      );
-    }
-
-    if (AUDIO.duration - currentTime < 1) clearInterval(intervalId);
-  }, 1000);
-}
-
-const scheduledActions = [
-  { timestamp: 1.0, action: () => clickArc("endocrine(ritu)") },
-  { timestamp: 44.2, action: () => clickArc("metabolic(indu)") },
-  { timestamp: 67.3, action: () => clickArc("lyosomal(rudra)") },
-  { timestamp: 94.5, action: () => clickArc("cns expansion(veda)") },
-  { timestamp: 111.5, action: () => clickArc("skin(aditya)") },
-  { timestamp: 116.9, action: () => clickArc("immuno(dishi)") },
-  { timestamp: 127.6, action: () => clickArc("msk(bana)") },
-  {
-    timestamp: 171.3,
-    action: () => clickArc("congenital & chromosomal(bhrama)"),
-  },
-  { timestamp: 290.7, action: () => clickArc("neurological(netra)") },
-  { timestamp: 405.2, action: () => clickArc("digestive(agni)") },
-  { timestamp: 414.2, action: () => clickArc("circulatory(rishi)") },
-];
-
-function clickArc(identifier: string) {
-  console.log(`Attempting to click identifier: ${identifier}`);
-
-  // Try to select by category and chakra first
-  let arc = document.querySelector(
+export function clickArc(identifier: string) {
+  const arc = document.querySelector(
     `path[data-category-chakra='${identifier}']`
   );
 
-  if (arc) {
-    console.log(`Found arc matching 'category-chakra': ${identifier}`);
-  } else {
-    // If no category-chakra match is found, try to select by disease
-    arc = document.querySelector(`path[data-disease='${identifier}']`);
-    if (arc) {
-      console.log(`Found arc matching 'disease': ${identifier}`);
-    } else {
-      // Log if no match is found for either category-chakra or disease
-      console.log(`No arc found matching '${identifier}'.`);
-      return; // Exit the function if no match is found
-    }
-  }
-
-  // If an arc is found, dispatch a click event
-  console.log(`Dispatching click event to arc.`);
-  arc.dispatchEvent(
-    new MouseEvent("click", { bubbles: true, cancelable: true })
-  );
-}
-
-// Function to check and execute actions based on the current playback time
-function checkAndExecuteActions(currentTime: number) {
-  scheduledActions.forEach(({ timestamp, action }) => {
-    if (Math.abs(timestamp - currentTime) < 0.5) {
-      action();
-    }
-  });
+  if (arc)
+    arc.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true })
+    );
 }

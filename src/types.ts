@@ -44,3 +44,9 @@ export interface DatumNode extends HierarchyRectangularNode<Datum> {
   target: Rectangle;
   current: Rectangle;
 }
+
+export type ScheduledAction = {
+  chakra: string;
+  disease: string;
+  timestamp: number;
+};

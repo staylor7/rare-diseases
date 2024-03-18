@@ -1,9 +1,10 @@
-import { csv } from "d3";
 import { DatumNode } from "../types";
 import { TRANSITION_TIME } from "../sunburst";
+
+import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
 
-const CSV = await csv(csvUrl);
+export const CSV = await csv(csvUrl);
 
 let currentCategory = "";
 let chakraContext: AudioContext;
