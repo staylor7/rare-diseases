@@ -1,6 +1,5 @@
 import { DatumNode } from "../types";
 import { TRANSITION_TIME } from "../sunburst";
-
 import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
 
@@ -9,15 +8,33 @@ export const CSV = await csv(csvUrl);
 let currentCategory = "";
 let chakraContext: AudioContext;
 let currentChakraGainNode: GainNode;
+let inactivityTimer: ReturnType<typeof setTimeout>;
+let currentAudio: HTMLAudioElement;
+
+/**
+ * Initializes the audio context on first call.
+ */
+function initAudioContext() {
+  if (!chakraContext) chakraContext = new AudioContext();
+  if (!currentChakraGainNode) currentChakraGainNode = chakraContext.createGain();
+}
+
+/**
+ * Resets the inactivity timer.
+ */
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    if (currentAudio) currentAudio.pause(); // Stop current audio on inactivity
+  }, TRANSITION_TIME + 5000); // Adjust time according to requirements
+}
 
 /**
  * Plays a chakra or disease sound according to the {@link DatumNode}
  */
 export default function playDatum(d: DatumNode) {
-  // Initialize on first call, i.e. after user interaction (see https://goo.gl/7K7WLu)
-  if (!chakraContext) chakraContext = new AudioContext();
-  if (!currentChakraGainNode)
-    currentChakraGainNode = chakraContext.createGain();
+  initAudioContext();
+  resetInactivityTimer();
 
   // Chakra/category
   if (d.depth === 1 && d.data.chakra) {
@@ -31,46 +48,64 @@ export default function playDatum(d: DatumNode) {
 }
 
 /**
- * Fades in the sound of the given chakra, fading out the current chakra sound if it exists
+ * Fades in the sound of the given chakra, fading out the current chakra sound if it exists.
  */
-async function playChakra(name: string) {
-  const path = (await import(`../../assets/chakra/${name}.mp3`)).default;
-  const audio = new Audio(path);
+interface CurrentSource {
+  source: AudioBufferSourceNode;
+  gainNode: GainNode;
+}
+
+let currentSource: CurrentSource | null = null; // Initialize as null
+
+
+async function playChakra(name: string, startTime = 0) {
+  if (!chakraContext) chakraContext = new AudioContext();
+
+  // Load the audio file into an AudioBuffer
+  const response = await fetch(`../../assets/chakra/${name}.mp3`);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await chakraContext.decodeAudioData(arrayBuffer);
+
+  // Create a new AudioBufferSourceNode for each play
+  const source = chakraContext.createBufferSource();
+  source.buffer = audioBuffer;
+
+  // Create a new GainNode for volume control
   const newGainNode = chakraContext.createGain();
-  const source = chakraContext.createMediaElementSource(audio);
-
-  newGainNode.connect(chakraContext.destination);
   source.connect(newGainNode);
+  newGainNode.connect(chakraContext.destination);
 
-  audio.loop = true;
-  audio.play();
+  // Calculate fade duration and overlap
+  let duration = audioBuffer.duration;
+  let fadeDuration = TRANSITION_TIME / 1000; // Transition time in seconds
+  let overlap = fadeDuration / 2; // Overlap duration for crossfade
 
-  fade(currentChakraGainNode, 1, 0);
-  fade(newGainNode, 0, 1);
+  // Schedule the fade in for the new source
+  newGainNode.gain.setValueAtTime(0, chakraContext.currentTime + startTime);
+  newGainNode.gain.linearRampToValueAtTime(1, chakraContext.currentTime + startTime + overlap);
 
-  currentChakraGainNode = newGainNode;
+  // Schedule the fade out to start at duration - overlap
+  if (currentSource !== null) {
+    let currentGainNode = currentSource.gainNode;
+    currentGainNode.gain.setValueAtTime(1, chakraContext.currentTime);
+    currentGainNode.gain.linearRampToValueAtTime(0, chakraContext.currentTime + overlap);
+    currentSource.source.stop(chakraContext.currentTime + overlap); // Stop the previous source after fade out
+  }
+
+  // Update the current source tracking
+  currentSource = { source: source, gainNode: newGainNode };
+
+  // Start the new source
+  source.start(chakraContext.currentTime + startTime);
+
+  // Prepare the next loop
+  setTimeout(() => {
+    playChakra(name, -overlap); // Start the next loop with an overlap
+  }, (duration - overlap) * 900); // Convert seconds to milliseconds
 }
 
-function fade(
-  gainNode: GainNode,
-  startVolume: number,
-  endVolume: number,
-  duration: number = TRANSITION_TIME
-) {
-  gainNode.gain.setValueAtTime(
-    boundVolume(startVolume),
-    chakraContext.currentTime
-  );
 
-  gainNode.gain.linearRampToValueAtTime(
-    boundVolume(endVolume),
-    chakraContext.currentTime + duration / 1000
-  );
-}
 
-function boundVolume(volume: number) {
-  return Math.min(Math.max(volume, 0), 1);
-}
 
 /**
  * Plays the sound for the given disease, overlapping any current audio
