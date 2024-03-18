@@ -3524,13 +3524,7 @@
               "value": 100
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "msk connective",
-      "chakra": "bana",
-      "children": [
+        },
         {
           "name": "Hypochondroplasia",
           "children": [
@@ -4427,7 +4421,7 @@
       ]
     },
     {
-      "name": "congenital and chromosomal",
+      "name": "congenital & chromosomal",
       "chakra": "bhrama",
       "children": [
         {
@@ -10320,7 +10314,7 @@
       ]
     },
     {
-      "name": "blood",
+      "name": "circulatory",
       "chakra": "rishi",
       "children": [
         {
@@ -10369,13 +10363,7 @@
               "value": 100
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "circulatory",
-      "chakra": "rishi",
-      "children": [
+        },
         {
           "name": "Moyamoya",
           "children": [
@@ -10423,200 +10411,6 @@
             }
           ]
         },
-        {
-          "name": "Idiopathic Thrombocytopenia Purpura",
-          "children": [
-            {
-              "name": "Nphenotype: 12.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: no",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: autosomal dominant  ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 3.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Blood and blood-forming tissues",
-              "value": 100
-            },
-            {
-              "name": "Gene: SOCS1",
-              "value": 100
-            },
-            {
-              "name": "Promoter: GGCGGGGCCGGCAGGGGGCGGGGCCTCCCGCCGTCGCCAGCCCCGCCTCCGAGCCGGTTTAAAAGACTGGCGCAGGGGCGGGCGCCGAACAGAGCGAGCTGCGGCCGT",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: characterized by a blood abnormality called thrombocytopenia, which is a shortage of blood cells called platelets that are needed for normal blood clotting",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/immune_thrombocytopenia?search=Idiopathic%20Thrombocytopenia%20Purpura",
-              "value": 100
-            }
-          ]
-        },
-        {
-          "name": "Catecholaminergic Polymorphic Ventricular Tachycardia",
-          "children": [
-            {
-              "name": "Nphenotype: 5.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 7.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: yes",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: autosomal dominant  ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 6.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Cardiovascular system",
-              "value": 100
-            },
-            {
-              "name": "Gene: CASQ2",
-              "value": 100
-            },
-            {
-              "name": "Promoter: ATTTATTTTTAGCCTGAAACAACTGCATCCTAAAAATGGAGTTCCTAATGAGACAGAGGCTGAGCAGAGCTATGTAAGGTATCTGGGGCTTGGCCTCCCAGCCTCCCT",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: condition characterized by an abnormal heart rhythm (arrhythmia)",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/catecholaminergic_polymorphic_ventricular_tachycardia?search=Catecholaminergic%20Polymorphic%20Ventricular%20Tachycardia",
-              "value": 100
-            }
-          ]
-        },
-        {
-          "name": "Long Qt Syndrome",
-          "children": [
-            {
-              "name": "Nphenotype: 5.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 12.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: yes",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: Heterogeneous",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 92.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Cardiovascular system",
-              "value": 100
-            },
-            {
-              "name": "Gene: KCNH2",
-              "value": 100
-            },
-            {
-              "name": "Promoter: GCTGCAGGAGCCTGGGCGGGCTGCGGGGGAGGGGGCCGCTGGCTGGGCACCGGCGGGGCGGGGGAGCCTAGTGTGGCGGGGTGGGGGTGGGGACCTGGTAGAAGGAGG",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: condition which affects the heart's electrical activity",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/long_qt_syndrome?search=Long%20Qt%20Syndrome",
-              "value": 100
-            }
-          ]
-        },
-        {
-          "name": "Postural Orthostatic Tachycardia Syndrome",
-          "children": [
-            {
-              "name": "Nphenotype: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: no",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: autosomal dominant  ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Nervous system",
-              "value": 100
-            },
-            {
-              "name": "Gene: SLC44A1",
-              "value": 100
-            },
-            {
-              "name": "Promoter: GAGGGACTGGGCGCGGGAGGCGGGAGGCGGGGGGACAGAGGGAGGCGCCGCCGCCGCCGCCGCCCGCCCCTTTCCGCTGGGGAGCAGCTGCTGCAGCAGGAGCAGAGC",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: condition related to autonomic nervous system dysfunction",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/postural_orthostatic_tachycardia_syndrome?search=Postural%20Orthostatic%20Tachycardia%20Syndrome",
-              "value": 100
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "circulatory blood",
-      "chakra": "rishi",
-      "children": [
         {
           "name": "Cnot3 Mutation",
           "children": [
@@ -10848,6 +10642,194 @@
             },
             {
               "name": "Link: https://www.malacards.org/card/pulmonary_hypertension?search=Pulmonary%20Hypertension",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Idiopathic Thrombocytopenia Purpura",
+          "children": [
+            {
+              "name": "Nphenotype: 12.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: no",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: autosomal dominant  ",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 3.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Blood and blood-forming tissues",
+              "value": 100
+            },
+            {
+              "name": "Gene: SOCS1",
+              "value": 100
+            },
+            {
+              "name": "Promoter: GGCGGGGCCGGCAGGGGGCGGGGCCTCCCGCCGTCGCCAGCCCCGCCTCCGAGCCGGTTTAAAAGACTGGCGCAGGGGCGGGCGCCGAACAGAGCGAGCTGCGGCCGT",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: characterized by a blood abnormality called thrombocytopenia, which is a shortage of blood cells called platelets that are needed for normal blood clotting",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/immune_thrombocytopenia?search=Idiopathic%20Thrombocytopenia%20Purpura",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Catecholaminergic Polymorphic Ventricular Tachycardia",
+          "children": [
+            {
+              "name": "Nphenotype: 5.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 7.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: yes",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: autosomal dominant  ",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 6.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Cardiovascular system",
+              "value": 100
+            },
+            {
+              "name": "Gene: CASQ2",
+              "value": 100
+            },
+            {
+              "name": "Promoter: ATTTATTTTTAGCCTGAAACAACTGCATCCTAAAAATGGAGTTCCTAATGAGACAGAGGCTGAGCAGAGCTATGTAAGGTATCTGGGGCTTGGCCTCCCAGCCTCCCT",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: condition characterized by an abnormal heart rhythm (arrhythmia)",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/catecholaminergic_polymorphic_ventricular_tachycardia?search=Catecholaminergic%20Polymorphic%20Ventricular%20Tachycardia",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Long Qt Syndrome",
+          "children": [
+            {
+              "name": "Nphenotype: 5.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 12.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: yes",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: Heterogeneous",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 92.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Cardiovascular system",
+              "value": 100
+            },
+            {
+              "name": "Gene: KCNH2",
+              "value": 100
+            },
+            {
+              "name": "Promoter: GCTGCAGGAGCCTGGGCGGGCTGCGGGGGAGGGGGCCGCTGGCTGGGCACCGGCGGGGCGGGGGAGCCTAGTGTGGCGGGGTGGGGGTGGGGACCTGGTAGAAGGAGG",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: condition which affects the heart's electrical activity",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/long_qt_syndrome?search=Long%20Qt%20Syndrome",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Postural Orthostatic Tachycardia Syndrome",
+          "children": [
+            {
+              "name": "Nphenotype: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: no",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: autosomal dominant  ",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Nervous system",
+              "value": 100
+            },
+            {
+              "name": "Gene: SLC44A1",
+              "value": 100
+            },
+            {
+              "name": "Promoter: GAGGGACTGGGCGCGGGAGGCGGGAGGCGGGGGGACAGAGGGAGGCGCCGCCGCCGCCGCCGCCCGCCCCTTTCCGCTGGGGAGCAGCTGCTGCAGCAGGAGCAGAGC",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: condition related to autonomic nervous system dysfunction",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/postural_orthostatic_tachycardia_syndrome?search=Postural%20Orthostatic%20Tachycardia%20Syndrome",
               "value": 100
             }
           ]
