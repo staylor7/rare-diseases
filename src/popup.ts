@@ -51,33 +51,36 @@ export default function handlePopup(p: DatumNode) {
   let detailsHtml = "";
 
   p.children?.forEach((child) => {
-    // Format links
-    if (child.data.name.startsWith("Link:")) {
-      const urlMatch = child.data.name.match(/Link:\s*(.*)/);
-      const url = urlMatch ? urlMatch[1] : "";
-      linksHtml += `<div><strong>Link:</strong> <a href="${url}" target="_blank" rel="noopener noreferrer" style="color: purple;">${url}</a></div>`;
-      return;
-    }
-
+    // Split the name to separate the term from the description or URL
     const parts = child.data.name.split(/:(.+)/);
     const term = parts[0].trim();
     let description = parts[1] ? parts[1].trim() : "";
 
-    // Capitalize the first letter of the description
+    // Check if the term is 'Link', indicating it's a URL to be displayed as "learn more"
+    if (term.toLowerCase() === "link") {
+      // Display "Link" in a strong tag and make "learn more" the clickable text
+      linksHtml += `<div><strong>Link:</strong> <a href="${description}" target="_blank" rel="noopener noreferrer" style="color: purple;">Learn more</a></div>`;
+      return; // Skip the rest of the processing for this child
+    }
+
+    // Capitalize the first letter of the description for non-link items
     if (description)
       description = description.charAt(0).toUpperCase() + description.slice(1);
 
-    // Format lines, e.g. "Elite: Yes"
+    // Format lines for non-link items, e.g., "Elite: Yes" or adding descriptions
     if (term.toLowerCase() === "description")
-      detailsHtml =
-        `<div style="margin-bottom: 10px;">${description}</div>` + detailsHtml;
+      detailsHtml = `<div style="margin-bottom: 10px;">${description}</div>` + detailsHtml;
     else
       detailsHtml += description
         ? `<div><strong>${term}:</strong> ${description}</div>`
         : `<div><strong>${term}</strong></div>`;
   });
 
+  // Concatenate linksHtml at the end of detailsHtml
   detailsHtml += linksHtml;
+
+  // The rest of your function remains unchanged, eventually setting popup.innerHTML with the modified detailsHtml
+
 
   if (!detailsHtml.trim()) detailsHtml = "<div>No details available</div>";
 
