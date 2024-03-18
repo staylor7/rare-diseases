@@ -106,7 +106,7 @@ const label = svg
   .attr("text-anchor", "middle")
   .style("user-select", "none")
   .selectAll("text")
-  .data(root.descendants().slice(1))
+  .data(root.descendants().slice(1)) // Assuming the root is not included
   .join("text")
   .attr("dy", "0.35em")
   .style("font-size", "small")
@@ -115,20 +115,32 @@ const label = svg
   .each(function (d) {
     const text = d.data.label || d.data.name;
     const arcLength = (d.y1 - d.y0) * RADIUS; // Estimate arc length available for the text
-    const charactersPerLine = Math.floor(arcLength / 6); // Estimate max characters per line; adjust '6' based on your font size and styling
+    const charactersPerLine = Math.floor(arcLength / 7); // Estimate max characters per line; adjust '6' based on your font size and styling
 
-    if (text.length > charactersPerLine)
-      // If the text is too long, split it into parts
-      splitText(text, charactersPerLine).forEach((part, i) => {
-        select(this)
-          .append("tspan")
-          .attr("x", 0) // Centered horizontally
-          .attr("y", `${i * 1.2}em`) // Position each line; adjust '1.2em' based on your needs
-          .attr("dy", `${i === 0 ? 0 : 0.2}em`) // Adjust vertical spacing for lines after the first
-          .text(part);
-      });
-    // If the text fits in one line, just set it as the content of the text element
-    else select(this).text(text);
+    if (d.depth >= 2) { // Replace someValue with the actual depth value that differentiates categories from diseases
+      // For disease-level labels, truncate and add '...' if the text is too long
+      if (text.length > charactersPerLine) {
+        const allowedLength = charactersPerLine - 3; // Adjust for the length of '...'
+        select(this).text(text.substr(0, allowedLength) + '...');
+      } else {
+        select(this).text(text);
+      }
+    } else {
+      // For category-level labels, attempt to split the text if it's too long
+      if (text.length > charactersPerLine) {
+        const parts = splitText(text, charactersPerLine); // Assuming splitText is defined elsewhere
+        parts.forEach((part, i) => {
+          select(this)
+            .append("tspan")
+            .attr("x", 0) // Centered horizontally
+            .attr("y", `${i * 1.2}em`) // Position each line; adjust '1.2em' based on your needs
+            .attr("dy", `${i === 0 ? 0 : 0.2}em`) // Adjust vertical spacing for lines after the first
+            .text(part);
+        });
+      } else {
+        select(this).text(text);
+      }
+    }
   });
 
 function splitText(text: string, maxLength: number): string[] {
@@ -163,14 +175,14 @@ function handleClick(p: DatumNode) {
 
   root.each(
     (d) =>
-      (d.target = {
-        x0:
-          Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        x1:
-          Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        y0: Math.max(0, d.y0 - p.depth),
-        y1: Math.max(0, d.y1 - p.depth),
-      }) // Should set all `DatumNode.target`
+    (d.target = {
+      x0:
+        Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      x1:
+        Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      y0: Math.max(0, d.y0 - p.depth),
+      y1: Math.max(0, d.y1 - p.depth),
+    }) // Should set all `DatumNode.target`
   );
 
   // Transition the data on all arcs, even the ones that aren’t visible,
