@@ -1,64 +1,44 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
 
-    <!-- Favicons -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="/favicon/site.webmanifest" />
+<head>
+  <meta charset="UTF-8" />
 
-    <!-- Previews (NOTE: Untested) -->
-    <meta
-      property="og:url"
-      content="https://stephenandrewtaylor.net/rare-test/"
-    />
-    <meta property="og:title" content="Catalog of Rare Diseases" />
-    <meta
-      property="og:description"
-      content="An interactive sonification of 230 rare diseases featuring DNA promoter sequences"
-    />
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+  <link rel="manifest" href="/favicon/site.webmanifest" />
 
-    <link rel="stylesheet" type="text/css" href="src/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catalog of Rare Diseases</title>
-  </head>
+  <!-- Previews (NOTE: Untested) -->
+  <meta property="og:url" content="https://stephenandrewtaylor.net/rare-test/" />
+  <meta property="og:title" content="Catalog of Rare Diseases" />
+  <meta property="og:description"
+    content="An interactive sonification of 230 rare diseases featuring DNA promoter sequences" />
 
-  <body>
-    <div id="page">
-      <h1 class="title">Catalog of Rare Diseases</h1>
-      <h2 class="title">An interactive snoification of 230 rare diseases</h2>
-      <p class="description">
-        Sunt irure voluptate sunt ea et qui enim sint consectetur sit aute sint
-        fugiat sunt aute minim culpa minim fugiat esse elit aliqua ipsum do sunt
-        minim nulla incididunt enim irure excepteur eu adipiscing eu minim sit
-        nostrud culpa enim et anim lorem minim do ea nostrud amet lorem id
-        excepteur non enim occaecat dolore irure pariatur non aute irure irure
-        labore laboris aliquip reprehenderit do laboris sint laboris sed eu
-        nostrud laboris nostrud do
-      </p>
-      <audio id="viola" controls></audio>
-      <div id="sunburst"></div>
+  <link rel="stylesheet" type="text/css" href="src/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalog of Rare Diseases</title>
+</head>
 
-      <!-- Popup for displaying disease details -->
-      <div
-        id="popup"
-        style="
+<body>
+  <div id="page">
+    <h1 class="title">Catalog of Rare Diseases</h1>
+    <h2 class="title">An interactive snoification of 230 rare diseases</h2>
+    <p class="description">
+      Sunt irure voluptate sunt ea et qui enim sint consectetur sit aute sint
+      fugiat sunt aute minim culpa minim fugiat esse elit aliqua ipsum do sunt
+      minim nulla incididunt enim irure excepteur eu adipiscing eu minim sit
+      nostrud culpa enim et anim lorem minim do ea nostrud amet lorem id
+      excepteur non enim occaecat dolore irure pariatur non aute irure irure
+      labore laboris aliquip reprehenderit do laboris sint laboris sed eu
+      nostrud laboris nostrud do
+    </p>
+    <audio id="viola" controls></audio>
+    <div id="sunburst"></div>
+
+    <!-- Popup for displaying disease details -->
+    <div id="popup" style="
           display: none;
           position: absolute;
           z-index: 10;
@@ -68,75 +48,49 @@
           border-radius: 5px;
           width: 28%;
           max-width: 450px;
-        "
-      >
-        <button id="closePopup" style="float: right">&times;</button>
-        <div id="diseaseDetails"></div>
-      </div>
-
-      <script type="module" src="/src/main.ts"></script>
-
-      <div id="footer">
-        <!-- Looks ugly as hell -->
-        <h2 id="credits">
-          <ul>
-            <li>Stephen Taylor - Data sonification</li>
-            <li>Dr. Aditi Kantipuly - Data curation</li>
-            <li>Quinn Ouyang - Web development</li>
-            <li>Sally Xue - Web development</li>
-          </ul>
-        </h2>
-        <h2>
-          <a href="https://github.com/staylor7/rare-diseases">GitHub</a>
-        </h2>
-
-        <!-- Modified from generated HTML from https://chooser-beta.creativecommons.org/ -->
-        <p
-          id="copyright"
-          xmlns:cc="http://creativecommons.org/ns#"
-          xmlns:dct="http://purl.org/dc/terms/"
-        >
-          <a
-            property="dct:title"
-            rel="cc:attributionURL"
-            href="https://stephenandrewtaylor.net/rare-diseases/"
-          >
-            Catalog of Rare Diseases
-          </a>
-          by
-          <a
-            rel="cc:attributionURL dct:creator"
-            property="cc:attributionName"
-            href="https://stephenandrewtaylor.net/"
-          >
-            Stephen Taylor
-          </a>
-          is marked with
-          <a
-            href="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
-            target="_blank"
-            rel="license noopener noreferrer"
-            style="display: inline-block"
-          >
-            CC0 1.0
-          </a>
-          <a
-            href="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
-            target="_blank"
-            rel="license noopener noreferrer"
-            style="display: inline-block; text-decoration: none"
-          >
-            <img
-              class="copyrightIcon"
-              src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
-            />
-            <img
-              class="copyrightIcon"
-              src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
-            />
-          </a>
-        </p>
-      </div>
+        ">
+      <button id="closePopup" style="float: right">&times;</button>
+      <div id="diseaseDetails"></div>
     </div>
-  </body>
+
+    <script type="module" src="/src/main.ts"></script>
+
+    <div id="footer">
+      <!-- Looks ugly as hell -->
+      <h2 id="credits">
+        <ul>
+          <li>Stephen Taylor - Data sonification</li>
+          <li>Dr. Aditi Kantipuly - Data curation</li>
+          <li>Quinn Ouyang - Web development</li>
+          <li>Sally Xue - Web development</li>
+        </ul>
+      </h2>
+      <h2>
+        <a href="https://github.com/staylor7/rare-diseases">GitHub</a>
+      </h2>
+
+      <!-- Modified from generated HTML from https://chooser-beta.creativecommons.org/ -->
+      <p id="copyright" xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+        <a property="dct:title" rel="cc:attributionURL" href="https://stephenandrewtaylor.net/rare-diseases/">
+          Catalog of Rare Diseases
+        </a>
+        by
+        <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://stephenandrewtaylor.net/">
+          Stephen Taylor
+        </a>
+        is marked with
+        <a href="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1" target="_blank"
+          rel="license noopener noreferrer" style="display: inline-block">
+          CC0 1.0
+        </a>
+        <a href="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1" target="_blank"
+          rel="license noopener noreferrer" style="display: inline-block; text-decoration: none">
+          <img class="copyrightIcon" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" />
+          <img class="copyrightIcon" src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1" />
+        </a>
+      </p>
+    </div>
+  </div>
+</body>
+
 </html>

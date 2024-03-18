@@ -995,7 +995,7 @@
       ]
     },
     {
-      "name": "metaboilc",
+      "name": "metabolic",
       "chakra": "indu",
       "children": [
         {
@@ -1045,153 +1045,6 @@
             }
           ]
         },
-        {
-          "name": "Methylmalonic Acidemia 163",
-          "children": [
-            {
-              "name": "Nphenotype: 419.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 5.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: yes",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: autosomal recessive  ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 499.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Nervous system",
-              "value": 100
-            },
-            {
-              "name": "Gene: MMUT",
-              "value": 100
-            },
-            {
-              "name": "Promoter: CCCTTCTGAGAGCCGCGCTTAGAGTAATTCGCGCCCAAACATTCGTAAACAGAGGAGACCCGGAAGTGGGTGGGAAGAAAGCGGAAACGGGCATCTAACCCTACCCCT",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: group of inherited disorders that prevent the body from breaking down proteins and fats (lipids) properly",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/methylmalonic_acidemia?search=Methylmalonic%20Acidemia",
-              "value": 100
-            }
-          ]
-        },
-        {
-          "name": "Urea Cycle Disorder 165",
-          "children": [
-            {
-              "name": "Nphenotype: 367.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: no",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: autosomal recessive  ",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 633.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Nervous system",
-              "value": 100
-            },
-            {
-              "name": "Gene: SLC25A13",
-              "value": 100
-            },
-            {
-              "name": "Promoter: GGTCACGTGTCCCTGTCCAGCCACTGCCCCAGGATCTGAGCCCTCCCCGGCTGCAGGGCAGAGGCCGCTGGATCACGCGCACCCCGGCGGCCAAGGCTGGGCCCAGCC",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: amino acid metabolic disorder that involves a deficiency of one of the enzymes in the urea cycle which is responsible for removing ammonia from the blood stream",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/urea_cycle_disorder?search=Urea%20Cycle%20Disorder",
-              "value": 100
-            }
-          ]
-        },
-        {
-          "name": "Adrenoleukodystrophy 218",
-          "children": [
-            {
-              "name": "Nphenotype: 112.0",
-              "value": 100
-            },
-            {
-              "name": "Ngenes: 1.0",
-              "value": 100
-            },
-            {
-              "name": "Elite: yes",
-              "value": 100
-            },
-            {
-              "name": "Inheritance: X linked recessive",
-              "value": 100
-            },
-            {
-              "name": "Nvariants: 167.0",
-              "value": 100
-            },
-            {
-              "name": "Phenotype: Nervous system",
-              "value": 100
-            },
-            {
-              "name": "Gene: ABCD1",
-              "value": 100
-            },
-            {
-              "name": "Promoter: CCGGACTCCGCCCCTCGCCCCTCCTCCGCCTCCTCCCCTTCCCCCGACTCGCCCCTGGGGAAGAGTGGGTGGGGATTCTGGGCCGGTGGAGGAGTCACTGTCGCTTCA",
-              "value": 100,
-              "label": "Promoter: hover for details"
-            },
-            {
-              "name": "Description: condition affecting the nervous system and the adrenal glands",
-              "value": 100,
-              "label": "Description: hover for details"
-            },
-            {
-              "name": "Link: https://www.malacards.org/card/adrenoleukodystrophy?search=Adrenoleukodystrophy",
-              "value": 100
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "metabolic",
-      "chakra": "indu",
-      "children": [
         {
           "name": "Creatine Transporter Deficiency 89",
           "children": [
@@ -1564,6 +1417,147 @@
             },
             {
               "name": "Link: https://www.malacards.org/card/tyrosinemia?search=Tyrosinemia",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Methylmalonic Acidemia 163",
+          "children": [
+            {
+              "name": "Nphenotype: 419.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 5.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: yes",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: autosomal recessive  ",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 499.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Nervous system",
+              "value": 100
+            },
+            {
+              "name": "Gene: MMUT",
+              "value": 100
+            },
+            {
+              "name": "Promoter: CCCTTCTGAGAGCCGCGCTTAGAGTAATTCGCGCCCAAACATTCGTAAACAGAGGAGACCCGGAAGTGGGTGGGAAGAAAGCGGAAACGGGCATCTAACCCTACCCCT",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: group of inherited disorders that prevent the body from breaking down proteins and fats (lipids) properly",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/methylmalonic_acidemia?search=Methylmalonic%20Acidemia",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Urea Cycle Disorder 165",
+          "children": [
+            {
+              "name": "Nphenotype: 367.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: no",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: autosomal recessive  ",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 633.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Nervous system",
+              "value": 100
+            },
+            {
+              "name": "Gene: SLC25A13",
+              "value": 100
+            },
+            {
+              "name": "Promoter: GGTCACGTGTCCCTGTCCAGCCACTGCCCCAGGATCTGAGCCCTCCCCGGCTGCAGGGCAGAGGCCGCTGGATCACGCGCACCCCGGCGGCCAAGGCTGGGCCCAGCC",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: amino acid metabolic disorder that involves a deficiency of one of the enzymes in the urea cycle which is responsible for removing ammonia from the blood stream",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/urea_cycle_disorder?search=Urea%20Cycle%20Disorder",
+              "value": 100
+            }
+          ]
+        },
+        {
+          "name": "Adrenoleukodystrophy 218",
+          "children": [
+            {
+              "name": "Nphenotype: 112.0",
+              "value": 100
+            },
+            {
+              "name": "Ngenes: 1.0",
+              "value": 100
+            },
+            {
+              "name": "Elite: yes",
+              "value": 100
+            },
+            {
+              "name": "Inheritance: X linked recessive",
+              "value": 100
+            },
+            {
+              "name": "Nvariants: 167.0",
+              "value": 100
+            },
+            {
+              "name": "Phenotype: Nervous system",
+              "value": 100
+            },
+            {
+              "name": "Gene: ABCD1",
+              "value": 100
+            },
+            {
+              "name": "Promoter: CCGGACTCCGCCCCTCGCCCCTCCTCCGCCTCCTCCCCTTCCCCCGACTCGCCCCTGGGGAAGAGTGGGTGGGGATTCTGGGCCGGTGGAGGAGTCACTGTCGCTTCA",
+              "value": 100,
+              "label": "Promoter: hover for details"
+            },
+            {
+              "name": "Description: condition affecting the nervous system and the adrenal glands",
+              "value": 100,
+              "label": "Description: hover for details"
+            },
+            {
+              "name": "Link: https://www.malacards.org/card/adrenoleukodystrophy?search=Adrenoleukodystrophy",
               "value": 100
             }
           ]

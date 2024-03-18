@@ -33,9 +33,12 @@ a {
 }
 
 html {
-  font-size: 62.5%; /* (62.5/100) * 16px = 10px */
-  -webkit-text-size-adjust: none; /* for iOS Safari */
-  text-size-adjust: none; /* for other mobile browsers */
+  font-size: 62.5%;
+  /* (62.5/100) * 16px = 10px */
+  -webkit-text-size-adjust: none;
+  /* for iOS Safari */
+  text-size-adjust: none;
+  /* for other mobile browsers */
 
   height: 100%;
   width: 100%;
@@ -66,15 +69,15 @@ summary,
 }
 
 .title {
-  color: purple;
+  color: #bc80bd;
 }
 
 .description {
   font-size: medium;
 }
 
+
 #sunburst {
-  margin: auto;
   min-width: 928px;
   min-height: 928px;
 }
