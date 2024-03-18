@@ -68,6 +68,14 @@ summary,
   margin: 8rem;
 }
 
+#header {
+  font-size: xx-large;
+}
+
+#subheader {
+  font-size: large;
+}
+
 .title {
   color: #bc80bd;
 }
