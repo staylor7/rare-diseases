@@ -36,12 +36,31 @@ export default function handlePopup(p: DatumNode) {
     // Setup close button functionality
     const closeButton = document.getElementById("closePopup");
     if (closeButton) {
-      closeButton.onclick = function () {
-        popup.style.display = "none";
-      };
+      closeButton.onclick = () => closePopup();
     } else {
       console.error("Close button not found.");
     }
+
+    function closePopup() {
+      if (popup) {
+        popup.style.display = "none";
+        document.removeEventListener('mousedown', handleOutsideClick);
+      }
+      if (sunburst) {
+        sunburst.style.opacity = "1";
+      }
+    }
+
+    // Add an event listener to close the popup when clicking outside
+    function handleOutsideClick(event: MouseEvent) {
+      if (popup && !popup.contains(event.target as Node) && (!sunburst || event.target !== sunburst)) {
+        closePopup();
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+
   });
 
   popup.style.position = "absolute";
