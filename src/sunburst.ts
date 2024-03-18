@@ -7,11 +7,12 @@ import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
 import handlePopup from "./popup";
 import playDatum from "./audio/datum";
-
-export const TRANSITION_TIME = 750; // ms
+import "./audio/viola";
 
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
+
+export const TRANSITION_TIME = 750; // ms
 
 const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
@@ -75,6 +76,7 @@ const path = svg
       ? CHAKRA_COLORS[chakra as keyof typeof CHAKRA_COLORS]
       : "#cccccc";
   })
+  .attr("data-category-chakra", (d) => `${d.data.name}`)
   .attr("fill-opacity", (d) =>
     shouldBeVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
   )
@@ -240,4 +242,15 @@ function labelTransform(d: Rectangle) {
   const y = ((d.y0 + d.y1) / 2) * RADIUS;
 
   return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+}
+
+export function clickArc(identifier: string) {
+  const arc = document.querySelector(
+    `path[data-category-chakra='${identifier}']`
+  );
+
+  if (arc)
+    arc.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true })
+    );
 }
