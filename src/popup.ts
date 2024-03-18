@@ -1,13 +1,51 @@
 import { DatumNode } from "./types";
 
 export default function handlePopup(p: DatumNode) {
-  const popup = document.getElementById("diseasePopup");
+  const popup = document.getElementById("popup");
   const sunburst = document.getElementById("sunburst");
 
   if (!popup || !sunburst) {
     console.error("Required elements not found.");
     return;
   }
+
+  // Set popup width relative to sunburst's width (consider moving this outside if it doesn't need to be recalculated every time)
+  const sunburstRect = sunburst.getBoundingClientRect();
+  const popupWidth = (sunburstRect.width / 2) * 0.6; // 60% of half the sunburst width
+  popup.style.width = `${popupWidth}px`;
+
+  // Make popup visible to calculate its dimensions accurately
+  popup.style.display = "block";
+
+  // Use requestAnimationFrame to ensure the layout has updated with the popup now being visible
+  requestAnimationFrame(() => {
+    // Adjust calculations to consider the current scroll position
+    const sunburstCenterX =
+      sunburstRect.left + window.scrollX + sunburstRect.width / 2;
+    const sunburstCenterY =
+      sunburstRect.top + window.scrollY + sunburstRect.height / 2;
+
+    const popupHeight = popup.offsetHeight;
+    const centeredLeft = sunburstCenterX - popupWidth / 2;
+    const centeredTop = sunburstCenterY - popupHeight / 2;
+
+    // Update popup position
+    popup.style.left = `${centeredLeft}px`;
+    popup.style.top = `${centeredTop}px`;
+
+    // Setup close button functionality
+    const closeButton = document.getElementById("closePopup");
+    if (closeButton) {
+      closeButton.onclick = function () {
+        popup.style.display = "none";
+      };
+    } else {
+      console.error("Close button not found.");
+    }
+  });
+
+  popup.style.position = "absolute";
+  popup.style.zIndex = "1000"; // Ensure the popup is above other content
 
   let linksHtml = "";
   let detailsHtml = "";
@@ -44,16 +82,12 @@ export default function handlePopup(p: DatumNode) {
   if (!detailsHtml.trim()) detailsHtml = "<div>No details available</div>";
 
   popup.innerHTML = `
-  <button id="popupCloseButton" style="position: absolute; top: 15px; right: 15px; cursor: pointer;">&times;</button>
+  <button id="closePopup" style="position: absolute; top: 15px; right: 15px; cursor: pointer;">&times;</button>
     <div style="margin: 20px;">
         <div style="font-size: 18px; margin-bottom: 10px;"><strong>${p.data.name}</strong></div>
         ${detailsHtml}
     </div>`;
-  popup.style.display = "block";
-  popup.style.position = "fixed";
-  popup.style.left = "50%";
-  popup.style.top = "50%";
-  popup.style.transform = "translate(-50%, -50%)";
+
   popup.style.zIndex = "1000";
   popup.style.backgroundColor = "white";
   popup.style.padding = "20px";
@@ -65,7 +99,7 @@ export default function handlePopup(p: DatumNode) {
 
   sunburst.style.opacity = "0.5";
 
-  const closeButton = popup.querySelector("#popupCloseButton");
+  const closeButton = popup.querySelector("#closePopup");
   if (closeButton)
     closeButton.addEventListener("click", function (event) {
       popup.style.display = "none";

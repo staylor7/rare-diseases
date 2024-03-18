@@ -109,7 +109,7 @@ const label = svg
   .data(root.descendants().slice(1))
   .join("text")
   .attr("dy", "0.35em")
-  .style("font-size", "11px") // Adjust the font size as needed
+  .style("font-size", "small")
   .attr("fill-opacity", (d) => +shouldBeVisible(d.current))
   .attr("transform", (d) => labelTransform(d.current))
   .each(function (d) {
