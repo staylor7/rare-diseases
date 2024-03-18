@@ -1,12 +1,5 @@
 import { DatumNode } from "./types";
 
-
-
-function showPopup() {
-
-}
-
-
 export default function handlePopup(p: DatumNode) {
   const popup = document.getElementById("popup");
   const sunburst = document.getElementById("sunburst");
@@ -18,7 +11,7 @@ export default function handlePopup(p: DatumNode) {
 
   // Set popup width relative to sunburst's width (consider moving this outside if it doesn't need to be recalculated every time)
   const sunburstRect = sunburst.getBoundingClientRect();
-  const popupWidth = sunburstRect.width / 2 * 0.6; // 60% of half the sunburst width
+  const popupWidth = (sunburstRect.width / 2) * 0.6; // 60% of half the sunburst width
   popup.style.width = `${popupWidth}px`;
 
   // Make popup visible to calculate its dimensions accurately
@@ -27,8 +20,10 @@ export default function handlePopup(p: DatumNode) {
   // Use requestAnimationFrame to ensure the layout has updated with the popup now being visible
   requestAnimationFrame(() => {
     // Adjust calculations to consider the current scroll position
-    const sunburstCenterX = sunburstRect.left + window.scrollX + sunburstRect.width / 2;
-    const sunburstCenterY = sunburstRect.top + window.scrollY + sunburstRect.height / 2;
+    const sunburstCenterX =
+      sunburstRect.left + window.scrollX + sunburstRect.width / 2;
+    const sunburstCenterY =
+      sunburstRect.top + window.scrollY + sunburstRect.height / 2;
 
     const popupHeight = popup.offsetHeight;
     const centeredLeft = sunburstCenterX - popupWidth / 2;
@@ -48,7 +43,6 @@ export default function handlePopup(p: DatumNode) {
       console.error("Close button not found.");
     }
   });
-
 
   popup.style.position = "absolute";
   popup.style.zIndex = "1000"; // Ensure the popup is above other content
