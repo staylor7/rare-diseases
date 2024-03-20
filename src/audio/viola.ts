@@ -3,14 +3,26 @@ import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
 import { clickArc } from "../sunburst";
 import { ScheduledAction } from "../types";
+import { pause } from "./datum";
 
 export const CSV = await csv(csvUrl);
+export let isPlaying = false;
 
 const AUDIO = <HTMLAudioElement>document.getElementById("viola");
 if (!AUDIO) throw new Error("No container found with the ID 'viola'");
 
 AUDIO.src = viola;
-// AUDIO.addEventListener("play", toggle);
+AUDIO.onpause = () => (isPlaying = false);
+AUDIO.onplay = () => {
+  isPlaying = true;
+  pause();
+};
+AUDIO.onseeking = () => {
+  isPlaying = true;
+};
+AUDIO.onseeked = () => {
+  isPlaying = false;
+};
 AUDIO.ontimeupdate = () => handleTimeUpdate();
 
 let currentChakra = "";
