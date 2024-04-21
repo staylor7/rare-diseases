@@ -19,6 +19,8 @@ const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
 const DATA: Datum = json;
 
+const categoryOrder = ['ritu', 'indu', 'rudra', 'veda', 'vasu', 'aditya', 'dishi', 'bana', 'bhrama', 'netra', 'agni', 'rishi'];
+
 const CHAKRA_COLORS = {
   ritu: "#bebada",
   indu: "#fcaea4",
@@ -40,8 +42,20 @@ const hierarchyNode = hierarchy(DATA)
 
 // Title arcs: "category (charka)"
 hierarchyNode.eachBefore((d) => {
-  if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`;
+  if (d.depth === 1) {
+    d.data.label = `${d.data.name} (${d.data.chakra})`;
+  }
+  if (d.children) {
+    d.children.sort((a, b) => {
+      // Safely handle potentially undefined chakra values
+      const indexA = a.data.chakra ? categoryOrder.indexOf(a.data.chakra) : categoryOrder.length;
+      const indexB = b.data.chakra ? categoryOrder.indexOf(b.data.chakra) : categoryOrder.length;
+      return indexA - indexB;
+    });
+  }
 });
+
+
 
 const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
   hierarchyNode
@@ -54,12 +68,13 @@ const svg = select<HTMLElement, Rectangle>(CONTAINER)
   .attr("preserveAspectRatio", "xMinYMin meet");
 
 const arcGen = arc<Rectangle>()
-  .startAngle((d) => d.x0)
-  .endAngle((d) => d.x1)
+  .startAngle((d) => d.x0 - 11 * Math.PI / 120)
+  .endAngle((d) => d.x1 - 11 * Math.PI / 120)
   .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
   .padRadius(RADIUS * 1.5)
   .innerRadius((d) => d.y0 * RADIUS)
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
+
 
 // Draw arcs
 const path = svg
@@ -178,14 +193,14 @@ function handleClick(p: DatumNode) {
 
   root.each(
     (d) =>
-      (d.target = {
-        x0:
-          Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        x1:
-          Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-        y0: Math.max(0, d.y0 - p.depth),
-        y1: Math.max(0, d.y1 - p.depth),
-      }) // Should set all `DatumNode.target`
+    (d.target = {
+      x0:
+        Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      x1:
+        Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      y0: Math.max(0, d.y0 - p.depth),
+      y1: Math.max(0, d.y1 - p.depth),
+    }) // Should set all `DatumNode.target`
   );
 
   // Transition the data on all arcs, even the ones that aren’t visible,
@@ -238,11 +253,27 @@ function shouldBeVisible(d: Rectangle) {
 }
 
 function labelTransform(d: Rectangle) {
-  const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
-  const y = ((d.y0 + d.y1) / 2) * RADIUS;
+  const x = (d.x0 + d.x1) / 2 + 4.42;  // Not a good way but 4.42 somehow works lol
+  const normalizedX = ((x + (2 * Math.PI)) % (2 * Math.PI)); // Normalize the angle, ensuring it stays within 0 to 2*PI
+  const angle = normalizedX * (180 / Math.PI); // Convert angle from radians to degrees
+  const radius = (d.y0 + d.y1) / 2 * RADIUS;
 
-  return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+  let textRotation;
+
+  // Adjusting based on normalized angles considering the added offset
+  if ((angle >= 0 && angle < 90) || (angle >= 270 && angle < 360)) {
+    // Right half of the circle after rotation, including the right upper quadrant (0 to 90) and lower right quadrant (270 to 360)
+    textRotation = angle;
+  } else {
+    textRotation = angle + 180;
+  }
+
+  return `translate(${Math.cos(normalizedX) * radius}, ${Math.sin(normalizedX) * radius}) rotate(${textRotation})`;
 }
+
+
+
+
 
 export function clickArc(identifier: string) {
   const arc = document.querySelector(
