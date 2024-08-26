@@ -3,6 +3,7 @@
  */
 
 import { interpolate, hierarchy, arc, select, partition, BaseType } from "d3";
+import { CHAKRA_COLORS, ORDERED_CHAKRAS, TRANSITION_TIME } from "./constants";
 import { Datum, DatumNode, Rectangle } from "./types";
 import json from "./hierarchy.json";
 import handlePopup from "./popup";
@@ -12,64 +13,27 @@ import "./audio/viola";
 const CONTAINER = document.getElementById("sunburst");
 if (!CONTAINER) throw new Error("No container found with the ID 'sunburst'");
 
-export const TRANSITION_TIME = 750; // ms
-
 const WIDTH = CONTAINER.clientHeight; // px
 const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
 const DATA: Datum = json;
 
-const categoryOrder = [
-  "ritu",
-  "indu",
-  "rudra",
-  "veda",
-  "vasu",
-  "aditya",
-  "dishi",
-  "bana",
-  "bhrama",
-  "netra",
-  "agni",
-  "rishi",
-];
-
-const CHAKRA_COLORS = {
-  ritu: "#bebada",
-  indu: "#fcaea4",
-  vasu: "#81b2d2",
-  rudra: "#fcbc73",
-  veda: "#b3dd69",
-  aditya: "#fdd8eb",
-  dishi: "#d9d9d9",
-  bana: "#bc80bd",
-  bhrama: "#d5eecf",
-  netra: "#ffed6f",
-  agni: "#93d6ca",
-  rishi: "#ffd9b3",
-};
-
 const hierarchyNode = hierarchy(DATA)
   .sum((d) => d.value || 0)
   .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-// Title arcs: "category (charka)"
-hierarchyNode.eachBefore((d) => {
-  if (d.depth === 1) {
-    d.data.label = `${d.data.name} (${d.data.chakra})`;
-  }
-  if (d.children) {
-    d.children.sort((a, b) => {
-      // Safely handle potentially undefined chakra values
-      const indexA = a.data.chakra
-        ? categoryOrder.indexOf(a.data.chakra)
-        : categoryOrder.length;
-      const indexB = b.data.chakra
-        ? categoryOrder.indexOf(b.data.chakra)
-        : categoryOrder.length;
-      return indexA - indexB;
-    });
-  }
+hierarchyNode.each((d) => {
+  if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`; // Chakra title
+  d.children?.sort((a, b) => {
+    // Safely handle potentially undefined chakra values
+    const indexA = a.data.chakra
+      ? ORDERED_CHAKRAS.indexOf(a.data.chakra)
+      : ORDERED_CHAKRAS.length;
+    const indexB = b.data.chakra
+      ? ORDERED_CHAKRAS.indexOf(b.data.chakra)
+      : ORDERED_CHAKRAS.length;
+    return indexA - indexB;
+  });
 });
 
 const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
@@ -113,7 +77,7 @@ const path = svg
   .attr("d", (d) => arcGen(d.current));
 
 path
-  .filter((d) => !!d.children) // `!!` casts to bool
+  .filter((d) => Boolean(d.children))
   .style("cursor", "pointer")
   .on("click", (_, d) => {
     handleClick(d);
@@ -288,12 +252,12 @@ function labelTransform(d: Rectangle) {
 }
 
 export function clickArc(identifier: string) {
-  const arc = document.querySelector(
+  const arcElement = document.querySelector(
     `path[data-category-chakra='${identifier}']`
   );
 
-  if (arc)
-    arc.dispatchEvent(
+  if (arcElement)
+    arcElement.dispatchEvent(
       new MouseEvent("click", { bubbles: true, cancelable: true })
     );
 }

@@ -1,8 +1,8 @@
 import { DatumNode } from "../types";
-import { TRANSITION_TIME } from "../sunburst";
 
 import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
+import { TRANSITION_TIME } from "../constants";
 
 export const CSV = await csv(csvUrl);
 
@@ -25,6 +25,7 @@ export default function playDatum(d: DatumNode) {
     playChakra(d.data.chakra);
     currentCategory = d.data.name;
   }
+
   // Disease/promoter
   else if (d.depth === 2) playDisease(d.data.name);
   else console.error(`Invalid datum to play: ${d}`);
