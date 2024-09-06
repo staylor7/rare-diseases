@@ -18,30 +18,29 @@ const HEIGHT = WIDTH; // px
 const RADIUS = WIDTH / 5; // px
 const DATA: Datum = json;
 
-const hierarchyNode = hierarchy(DATA)
+const HIERARCHY_ROOT = hierarchy(DATA)
   .sum((d) => d.value || 0)
-  .sort((a, b) => (b.value || 0) - (a.value || 0));
+  .sort((a, b) => (b.value || 0) - (a.value || 0))
+  .each((d) => {
+    if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`; // Chakra title
 
-hierarchyNode.each((d) => {
-  if (d.depth === 1) d.data.label = `${d.data.name} (${d.data.chakra})`; // Chakra title
-  d.children?.sort((a, b) => {
-    // Safely handle potentially undefined chakra values
-    const indexA = a.data.chakra
-      ? ORDERED_CHAKRAS.indexOf(a.data.chakra)
-      : ORDERED_CHAKRAS.length;
-    const indexB = b.data.chakra
-      ? ORDERED_CHAKRAS.indexOf(b.data.chakra)
-      : ORDERED_CHAKRAS.length;
-    return indexA - indexB;
+    d.children?.sort((a, b) =>
+      // Sort Datums that represent chakras
+      a.data.chakra && b.data.chakra
+        ? ORDERED_CHAKRAS.indexOf(a.data.chakra) -
+          ORDERED_CHAKRAS.indexOf(b.data.chakra)
+        : 0
+    );
   });
-});
 
-const root = partition<Datum>().size([2 * Math.PI, hierarchyNode.height + 1])(
-  hierarchyNode
-) as DatumNode; // WARNING: Unvalidated typing (assumes all `DatumNode.current` and `DatumNode.target` will exist)
-root.each((d) => (d.current = d)); // Should set all `DatumNode.current`
+const ROOT = partition<Datum>()
+  .size([2 * Math.PI, HIERARCHY_ROOT.height + 1])(HIERARCHY_ROOT)
+  .each(
+    (d) =>
+      ((d as DatumNode).current = { x0: d.x0, y0: d.y0, x1: d.x1, y1: d.y1 })
+  ) as DatumNode; // WARNING: Unvalidated typing (assumes all `DatumNode.current` and `DatumNode.target` will exist). Should set all `DatumNode.current`
 
-const svg = select<HTMLElement, Rectangle>(CONTAINER)
+const SVG = select<HTMLElement, Rectangle>(CONTAINER)
   .append<BaseType>("svg")
   .attr("viewBox", [-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT])
   .attr("preserveAspectRatio", "xMinYMin meet");
@@ -55,10 +54,9 @@ const arcGen = arc<Rectangle>()
   .outerRadius((d) => Math.max(d.y0 * RADIUS, d.y1 * RADIUS - 1));
 
 // Draw arcs
-const path = svg
-  .append("g")
+const path = SVG.append("g")
   .selectAll("path")
-  .data(root.descendants().slice(1))
+  .data(ROOT.descendants().slice(1))
   .join("path")
   .attr("fill", (d) => {
     let ancestor = d;
@@ -95,13 +93,12 @@ path.append("title").text(
 );
 
 // Draw labels
-const label = svg
-  .append("g")
+const label = SVG.append("g")
   .attr("pointer-events", "none")
   .attr("text-anchor", "middle")
   .style("user-select", "none")
   .selectAll("text")
-  .data(root.descendants().slice(1)) // Assuming the root is not included
+  .data(ROOT.descendants().slice(1)) // Exclude the root
   .join("text")
   .attr("dy", "0.35em")
   .style("font-size", "small")
@@ -150,9 +147,8 @@ function splitText(text: string, maxLength: number): string[] {
 }
 
 // Draw circle
-const parent = svg
-  .append("circle")
-  .datum(root)
+const parent = SVG.append("circle")
+  .datum(ROOT)
   .attr("r", RADIUS)
   .attr("fill", "none")
   .attr("pointer-events", "all")
@@ -165,11 +161,11 @@ function handleClick(p: DatumNode) {
   if (popup) popup.style.display = "none"; // Hide popup initially to handle any previous state
   if (p.depth === 2) return handlePopup(p);
 
-  const t = svg.transition().duration(TRANSITION_TIME);
+  const t = SVG.transition().duration(TRANSITION_TIME);
 
-  parent.datum(p.parent || root);
+  parent.datum(p.parent || ROOT);
 
-  root.each(
+  ROOT.each(
     (d) =>
       (d.target = {
         x0:
