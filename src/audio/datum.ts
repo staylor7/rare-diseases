@@ -6,50 +6,49 @@ import { TRANSITION_TIME } from "../constants";
 
 export const CSV = await csv(csvUrl);
 
-let currentCategory = "";
-let chakraContext: AudioContext;
-let currentChakraGainNode: GainNode;
+let context: AudioContext;
+let currGain: GainNode;
+let currChakra = "";
 
 /**
  * Plays a chakra or disease sound according to the {@link DatumNode}
  */
 export default function playDatum(d: DatumNode) {
-  // Initialize on first call, i.e. after user interaction (see https://goo.gl/7K7WLu)
-  if (!chakraContext) chakraContext = new AudioContext();
-  if (!currentChakraGainNode)
-    currentChakraGainNode = chakraContext.createGain();
+  if (!context) context = new AudioContext(); // Initialize on first call, i.e. after user interaction (see https://goo.gl/7K7WLu)
+  if (!currGain) currGain = context.createGain();
 
   // Chakra/category
-  if (d.depth === 1 && d.data.chakra) {
-    if (d.data.name === currentCategory) return; // Ignore replaying the same category (continue looping)
-    playChakra(d.data.chakra);
-    currentCategory = d.data.name;
+  const chakra = d.data.chakra;
+  if (chakra) {
+    if (chakra === currChakra) return; // Ignore replaying the same category (continue looping)
+    playChakra(chakra);
+    currChakra = chakra;
   }
 
   // Disease/promoter
-  else if (d.depth === 2) playDisease(d.data.name);
+  else if (d.data.name) playDisease(d.data.name);
   else console.error(`Invalid datum to play: ${d}`);
 }
 
 /**
  * Fades in the sound of the given chakra, fading out the current chakra sound if it exists
  */
-async function playChakra(name: string) {
-  const path = (await import(`../../assets/chakra/${name}.mp3`)).default;
-  const audio = new Audio(path);
-  const newGainNode = chakraContext.createGain();
-  const source = chakraContext.createMediaElementSource(audio);
-
-  newGainNode.connect(chakraContext.destination);
-  source.connect(newGainNode);
+async function playChakra(chakra: string) {
+  const audio = new Audio(
+    (await import(`../../assets/chakra/${chakra}.mp3`)).default
+  );
+  const newGain = context.createGain();
+  context.createMediaElementSource(audio).connect(newGain);
+  newGain.connect(context.destination);
 
   audio.loop = true;
   audio.play();
 
-  fade(currentChakraGainNode, 1, 0);
-  fade(newGainNode, 0, 1);
+  // Crossfade old and new chakra audios
+  fade(currGain, 1, 0); // WARNING: Does not pause audio once it mutes
+  fade(newGain, 0, 1);
 
-  currentChakraGainNode = newGainNode;
+  currGain = newGain;
 }
 
 function fade(
@@ -58,37 +57,35 @@ function fade(
   endVolume: number,
   duration: number = TRANSITION_TIME
 ) {
-  gainNode.gain.setValueAtTime(
-    boundVolume(startVolume),
-    chakraContext.currentTime
-  );
+  gainNode.gain.setValueAtTime(bound(startVolume), context.currentTime);
 
   gainNode.gain.linearRampToValueAtTime(
-    boundVolume(endVolume),
-    chakraContext.currentTime + duration / 1000
+    bound(endVolume),
+    context.currentTime + duration / 1000
   );
 }
 
-function boundVolume(volume: number) {
-  return Math.min(Math.max(volume, 0), 1);
+function bound(n: number, floor = 0, ceiling = 1) {
+  return Math.min(Math.max(n, floor), ceiling);
 }
 
 /**
- * Plays the sound for the given disease, overlapping any current audio
+ * Plays the disease audio, ignoring/overlapping any context ("fire and forget")
  */
-async function playDisease(name: string) {
-  const num = findDiseaseNum(name);
+async function playDisease(disease: string) {
+  const index = getDiseaseIndex(disease);
 
-  if (!num) return console.error(`Disease row number not found: ${name}`);
+  if (!index)
+    return console.error(`Could not find row index for disease: ${disease}`);
 
   new Audio(
     (
-      await import(`../../assets/promoter/dna${num.padStart(3, "0")}.mp3`)
+      await import(`../../assets/promoter/dna${index.padStart(3, "0")}.mp3`)
     ).default
   ).play();
 }
 
-function findDiseaseNum(name: string) {
-  const row = CSV.find((entry) => entry.Disease === name);
+function getDiseaseIndex(disease: string): string | null {
+  const row = CSV.find((entry) => entry.Disease === disease);
   return row ? row.index : null;
 }
