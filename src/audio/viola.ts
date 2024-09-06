@@ -1,4 +1,3 @@
-import viola from "/viola.mp3";
 import { csv } from "d3";
 import csvUrl from "/seq.d3.csv?url";
 import { clickArc } from "../sunburst";
@@ -9,7 +8,7 @@ export const CSV = await csv(csvUrl);
 const AUDIO = <HTMLAudioElement>document.getElementById("viola");
 if (!AUDIO) throw new Error("No container found with the ID 'viola'");
 
-AUDIO.src = viola;
+AUDIO.src = (await import(`../../assets/viola.mp3`)).default;
 // AUDIO.addEventListener("play", toggle);
 AUDIO.ontimeupdate = () => handleTimeUpdate();
 
