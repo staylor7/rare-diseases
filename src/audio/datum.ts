@@ -16,23 +16,26 @@ const DATUM_AUDIOS = new Map<string, DatumAudio>();
 
 let context: AudioContext;
 let currChakra = "";
+let masterGainNode: GainNode;
 
 const stop = document.getElementById("stop");
 
-// stop?.addEventListener("click", (_) => {
-//   if (!context || !currGain) return;
-
-//   fade(currGain, 1, 0);
-//   const newGain = context.createGain();
-//   newGain.connect(context.destination);
-// });
+stop?.addEventListener("click", () => {
+  if (!context || !masterGainNode) return;
+  fade(masterGainNode, 1, 0);
+});
 
 /**
  * Plays a chakra or disease sound according to the {@link DatumNode}
  */
 export default function playDatum(d: DatumNode) {
   if (!context) context = new AudioContext(); // Initialize on first call, i.e. after user interaction (see https://goo.gl/7K7WLu)
+  if (!masterGainNode) {
+    masterGainNode = context.createGain();
+    masterGainNode.connect(context.destination);
+  }
   context.resume();
+  masterGainNode.gain.value = 1;
 
   // Chakra/category
   const chakra = d.data.chakra;
@@ -46,8 +49,6 @@ export default function playDatum(d: DatumNode) {
   // Disease/promoter
   else if (d.data.name) playDisease(d.data.name);
   else console.error(`Invalid datum to play: ${d}`);
-
-  console.log(DATUM_AUDIOS);
 }
 
 function fadeOutChakra(chakra: string) {
@@ -69,7 +70,7 @@ async function fadeInChakra(chakra: string) {
   const sourceNode = context.createMediaElementSource(element);
 
   sourceNode.connect(gainNode);
-  gainNode.connect(context.destination);
+  gainNode.connect(masterGainNode);
 
   fade(gainNode, 0, 1);
   element.play();
@@ -97,7 +98,7 @@ function bound(n: number, floor = 0, ceiling = 1) {
 }
 
 /**
- * Plays the disease audio, ignoring/overlapping any context ("fire and forget")
+ * Plays the disease audio
  */
 async function playDisease(disease: string) {
   const diseaseAudio = DATUM_AUDIOS.get(disease);
@@ -120,8 +121,10 @@ async function playDisease(disease: string) {
 
   const sourceNode = context.createMediaElementSource(element);
   const gainNode = context.createGain();
+
   sourceNode.connect(gainNode);
-  gainNode.connect(context.destination);
+  gainNode.connect(masterGainNode);
+
   element.play();
 
   DATUM_AUDIOS.set(disease, { element, sourceNode, gainNode });
