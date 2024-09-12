@@ -1,0 +1,39 @@
+name: CPanel Deployment to https://stephenandrewtaylor.net/rare-diseases
+
+on: push
+# on:
+#   push:
+#     branches:
+#       - main
+
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - name: Build
+        run: |
+          npm i
+          npm run all
+          npx tsc
+          npx vite build --base https://stephenandrewtaylor.net/rare-diseases/
+          ls
+
+      - name: Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.stephenandrewtaylor.net
+          port: 22
+          username: quinnouyang@stephenandrewtaylor.net
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./rare-diseases/
+          dry-run: true
