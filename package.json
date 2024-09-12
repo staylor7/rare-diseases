@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "local": "npm run all && npm run build",
-    "cpanel": "npm run all && tsc && vite build --base https://stephenandrewtaylor.net/rare-test/ --outDir rare-test && zip -r rare-test.zip rare-test && mv rare-test dist",
+    "cpanel": "npm run all && tsc && vite build --base https://stephenandrewtaylor.net/rare-diseases/ --outDir rare-diseases && zip -r rare-diseases.zip rare-diseases && mv rare-diseases dist",
     "cloudflare": "npm run all && npm run build && npx wrangler pages deploy dist",
     "all": "npm run format && npm run lint",
     "format": "npx prettier --write .",
@@ -28,7 +28,7 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vite": "^4.4.5",
-    "wrangler": "^3.34.2"
+    "wrangler": "^3.76.0"
   },
   "dependencies": {
     "@fontsource-variable/roboto-flex": "^5.0.14",
