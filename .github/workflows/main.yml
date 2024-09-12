@@ -31,6 +31,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.stephenandrewtaylor.net
+          port: 22
           username: quinnouyang@stephenandrewtaylor.net
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
